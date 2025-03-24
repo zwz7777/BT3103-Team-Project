@@ -50,7 +50,9 @@ git commit -m "Short description of what you did"
 ```
 
 - Alternatively, commit through vscode source controls instead of command line tools:
-![Source Control Image]('./images/image.png')
+![Source Control Image](images/vscode_commit.png)
+
+"+" sign is for staging changes.
 
 
 ---
@@ -73,7 +75,9 @@ git push origin your-branch-name
 
 ---
 
-## 🔄 6. Keeping Your Branch Updated - a good practice would be: everytime do this before you continue developing your own branch, ensure your branch is updated before you create a pull request
+## 🔄 6. Keeping Your Branch Updated 
+- a good practice would be: everytime do this before you continue developing your own branch, ensure your branch is updated before you create a pull request
+
 If `main` has new changes and you want to update your branch:
 ```bash
 # Make sure you are on your branch
