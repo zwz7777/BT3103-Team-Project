@@ -78,16 +78,19 @@ git push origin your-branch-name
 ## 🔄 6. Keeping Your Branch Updated 
 - a good practice would be: everytime do this before you continue developing your own branch, ensure your branch is updated before you create a pull request
 
-If `main` has new changes and you want to update your branch:
-```bash
-# Make sure you are on your branch
+# Step 1: Switch to your local main branch
+git checkout main
+
+# Step 2: Fetch and update local main with origin/main
+git fetch origin
+git pull origin main
+# OR: git merge origin/main (if you prefer manual control)
+
+# Step 3: Switch to your branch
 git checkout your-branch-name
 
-# Fetch latest changes
-git fetch origin
-
-# Merge main into your branch
-git merge origin/main
+# Step 4: Merge updated main into your branch
+git merge main
 
 # OR: rebase for cleaner history (optional)
 # git rebase origin/main
