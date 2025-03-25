@@ -1,11 +1,16 @@
+
+
 <template>
-  <div id="app">
-    <Login />
-  </div>
+   <Home />
+   <Login />
+
+    
+  </main>
 </template>
 
 <script>
 import Login from '@/components/Login.vue';
+import Home from './components/Home.vue';
 
 export default {
   name: 'App',
