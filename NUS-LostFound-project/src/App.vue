@@ -2,7 +2,7 @@
 
 <template>
    <Home />
-   <Login />
+   <Login /> # Will be in separate page require router navigation in the final product, currently for testing
 </template>
 
 <script>
