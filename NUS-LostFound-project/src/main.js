@@ -1,6 +1,5 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
-import App from './App.vue'
+import LostItemsPage from './components/LostItemsPage.vue'
 
-createApp(App).mount('#app')
+createApp(LostItemsPage).mount('#app')
+
