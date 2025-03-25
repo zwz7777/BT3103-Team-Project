@@ -3,9 +3,6 @@
 <template>
    <Home />
    <Login />
-
-    
-  </main>
 </template>
 
 <script>
@@ -16,6 +13,7 @@ export default {
   name: 'App',
   components: {
     Login,
+    Home,
   },
 };
 </script>
