@@ -78,6 +78,7 @@ git push origin your-branch-name
 ## 🔄 6. Keeping Your Branch Updated 
 - a good practice would be: everytime do this before you continue developing your own branch, ensure your branch is updated before you create a pull request
 
+```bash
 # Step 1: Switch to your local main branch
 git checkout main
 
