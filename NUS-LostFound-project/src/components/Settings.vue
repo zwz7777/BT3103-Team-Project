@@ -10,10 +10,10 @@
         </div>
 
         <div class="picture">
-            <img src="pikachu.webp">
+
         </div>
     </div>
-    <div>
+    <div class="container">
         <h2>Personal information</h2>
         <div class="editForm">
             <form id="userForm">
@@ -34,7 +34,9 @@
                 <input type="number" id="telegram" required=" " placeholder="@xxxxx" />
                 <br /><br />
 
-                <button id="button" type="button">Submit Edit</button> <br /><br />
+                <div class="save">
+                    <button id="savebutton" type="button" v-on:click="editProfile"> Edit Profile </button>
+                </div>
             </form>
         </div>
     </div>
@@ -46,57 +48,51 @@
 </template>
 
 <style scoped>
+.editForm {
+  display: inline-block;
+  text-align: right;
+}
+
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100vw;
-    box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 }
 
-.Settings {
-    flex: 6;
-    font-size: 20px;
-}
-
-.profile {
-    flex: 1;
-    text-align: right;
-}
-
-.picture {
-    flex: 1;
-    margin-left: 20px;
-    align-items: center;
-    justify-content: center;
-}
-
-img {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-}
-
-#profileHeading {
-    margin-bottom: 10px;
-    font-size: 20px;
-}
-
-label {
-    font-weight: bold;
-}
-
-button {
-    padding: 8px 16px;
-    background-color: #0052cc;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.save {
+  text-align: center;
 }
 </style>
 
 <script>
+import firebaseApp from '../firebase.js';
+import { getFirestore } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+const db = getFirestore(firebaseApp)
 
+export default {
+    methods: {
+        async editProfile() {
+            //need to get data from db based on account
+
+            //update new account
+            console.log("IN AC")
+            let account = document.getElementById("account").value;
+            let nickname = document.getElementById("nickname").value;
+            let phoneNumber = document.getElementById("phoneNumber").value;
+            let telegram = document.getElementById("telegram").value;
+            alert(" Updating your data : " + account);
+            try {
+                const docRef = await setDoc(doc(db, "User", account), {
+                    Account: account, Nickname: nickname, PhoneNumber: phoneNumber, Telegram: telegram
+                })
+                console.log(docRef)
+                document.getElementById('userForm').reset();
+                //this.$emit("added")
+            } catch (error) {
+                console.log("Error adding document: ", error)
+            }
+        }
+    }
+}
 </script>
