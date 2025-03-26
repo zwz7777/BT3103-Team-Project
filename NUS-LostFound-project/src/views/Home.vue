@@ -1,7 +1,11 @@
 <template>
   <div>
-    <h1>Welcome to the Home Page</h1>
-    <p>This is the home page, with highlighted items</p>
+    <!-- Website Header and Menu Bar -->
+    <header>
+      <div class="logo">
+        <h1>NUS Lost & Found</h1>
+      </div>
+    </header>
   </div>
 </template>
 

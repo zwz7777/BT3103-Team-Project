@@ -6,14 +6,6 @@
           <h1>NUS Lost & Found</h1>
         </div>
       </header>
-  
-      <div class = "enter">
-        <h1>Login</h1>
-        <br>
-        <p>Click here to login</p>
-        <router-link to="/login">Login</router-link>
-      </div>
-  
     </div>
   </template>
   
@@ -22,7 +14,7 @@
     name: "Home"
   };
   </script>
-  
+
   <style scoped>
   header {
     display: flex;
@@ -49,4 +41,3 @@
     margin: 0;
   }
   </style>
-  
