@@ -9,7 +9,7 @@
 
 <script>
 import Login from '@/components/Login.vue';
-import Home from './components/Home.vue';
+import Home from './views/Home.vue';
 
 export default {
   name: 'App',

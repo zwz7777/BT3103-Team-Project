@@ -1,11 +1,32 @@
 <template>
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the home page of the app.</p>
-    </div>
-  </template>
+  <div>
+    <!-- Website Header and Menu Bar -->
+    <header>
+      <div class="logo">
+        <h1>NUS Lost & Found</h1>
+      </div>
+    </header>
+  </div>
+</template>
+
 <script>
 export default {
- name:"Home" 
-}
+  name: "Home"
+};
 </script>
+
+<style scoped>
+/* Styles for Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px 20px;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+}
+</style>
