@@ -16,7 +16,8 @@ export default {
  name: 'App',
  components: {
    Entrance,
-   ReportLostItems
+   ReportLostItems,
+   Sidebar
  },
 };
 </script>
