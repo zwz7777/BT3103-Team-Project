@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings Page</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+        <div class="Settings">
+          <h1>Settings</h1>
+        </div>
+      
+        <div class="profile">
+          <h1 id="profileHeading">Your Profile</h1>
+          <button id="button" type="button">Change</button>
+        </div>
+      
+        <div class="picture">
+          <img src="pikachu.webp">
+        </div>
+      </div>
+    <div>
+      <h2>Personal information</h2>
+      <div class="editForm">
+        <form id="userForm">
+          <label for="account">Account: </label>
+          <input
+            type="text"
+            id="account"
+            required=" "
+            placeholder="E*******@u.nus.edu"
+          />
+          <br /><br />
+
+          <label for="nickname">Nickname: </label>
+          <input
+            type="text"
+            id="nickname"
+            required=" "
+            placeholder="Enter your nickname"
+          />
+          <br /><br />
+
+          <label for="phoneNumber">Phone Number: </label>
+          <input
+            type="text"
+            id="phoneNumber"
+            required=" "
+            placeholder="XXXXXXXX"
+            pattern="\d{8}$"
+            maxlength="8"
+          />
+          <br /><br />
+
+          <label for="telegram">Telegram Handle: </label>
+          <input
+            type="number"
+            id="telegram"
+            required=" "
+            placeholder="@xxxxx"
+          />
+          <br /><br />
+
+          <button id="button" type="button">Submit Edit</button> <br /><br />
+        </form>
+      </div>
+    </div>
+    <h2>Change Password</h2>
+    <button id="button" type="button">Click here</button>
+
+    <h2>Log Out</h2>
+    <button id="button" type="button">Click here</button>
+  </body>
+</html>
