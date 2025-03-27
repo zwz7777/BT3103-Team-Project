@@ -1,11 +1,16 @@
 <template>
     <div>
       <h1>Welcome to the Login Page</h1>
-      <p>This is the login page of the app.</p>
+      <Login />
     </div>
   </template>
 <script>
-export default {
- name:"LoginPage" 
-}
+  import Login from '@/components/Login.vue';
+
+  export default {
+    name:"LoginPage", 
+    components: {
+      Login
+    },
+  }
 </script>
