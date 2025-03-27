@@ -2,6 +2,7 @@
   <Entrance />
   <Login /> # Will be in separate page require router navigation in the final product, currently for testing
   <Sidebar />
+  <ReportLostItems />
    <div class="main-content">
      <router-view/>
    </div>
@@ -9,6 +10,7 @@
 
 <script>
 import Login from '@/components/Login.vue';
+import ReportLostItems from './views/ReportLostItems.vue';
 import Entrance from './views/Entrance.vue';
 import Sidebar from './components/Sidebar.vue';
 
@@ -17,6 +19,7 @@ export default {
  components: {
    Login,
    Entrance,
+   ReportLostItems
  },
 };
 </script>
