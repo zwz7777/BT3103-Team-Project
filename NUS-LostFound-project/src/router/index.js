@@ -1,20 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/views/HomePage.vue'
-import ReportLostItems from '@/views/ReportLostItems.vue'
-import ReportItemForm from '@/views/ReportItemForm.vue'
-import ListLostItems from '@/views/ListLostItems.vue'
-import ListFoundItems from '@/views/ListFoundItems.vue'
+import Home from '@/views/Home.vue'
+import LoginPage from '@/views/LoginPage.vue'
+import ReportLost from '@/views/ReportLost.vue'
+import Lost from '@/views/LostPage.vue'
+import Found from '@/views/FoundPage.vue'
+import Settings from '@/views/Settings.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: HomePage },
-  { path: '/report-lost-items', name: 'ReportLostItems', component: ReportLostItems },
-  // For report form
-  { path: '/report/:formType', name: 'ReportItemForm', component: ReportItemForm, props: true },
-  { path: '/list-of-lost-items', name: 'ListLostItems', component: ListLostItems },
-  { path: '/list-of-found-items', name: 'ListFoundItems', component: ListFoundItems },
+    {
+        path: '/',
+        name: 'Home',
+        component: Home
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: LoginPage
+    },
+    {
+        path: '/ReportLost',
+        name: 'Report Lost Items',
+        component: ReportLost
+    },
+    {
+        path: '/lostpage',
+        name: 'Lost Item List',
+        component: Lost
+    },
+    {
+        path: '/FoundPage',
+        name: 'Found Item List',
+        component: Found
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        component: Settings
+    },
 ]
-
-export default createRouter({
-  history: createWebHistory(),
-  routes
-})
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+  });
+  
+  export default router;
