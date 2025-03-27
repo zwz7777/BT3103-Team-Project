@@ -13,6 +13,7 @@
 
       </div>
   </div>
+  <Logout />
   <div class="container">
       <h2>Personal information</h2>
       <div class="editForm">
@@ -44,7 +45,8 @@
   <button id="button" type="button">Click here</button>
 
   <h2>Log Out</h2>
-  <button id="button" type="button">Click here</button>
+  <Logout />
+  <!-- <button id="button" type="button">Click here</button> -->
 </template>
 
 <style scoped>
@@ -68,6 +70,7 @@ text-align: center;
 import firebaseApp from '../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
+import Logout from '@/components/Logout.vue';
 const db = getFirestore(firebaseApp)
 
 export default {
@@ -93,6 +96,9 @@ export default {
               console.log("Error adding document: ", error)
           }
       }
+  },
+  components: {
+      Logout
   }
 }
 </script>
