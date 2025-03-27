@@ -6,11 +6,11 @@
 
         <div class="profile">
             <h1 id="profileHeading">Your Profile</h1>
-            <button id="button" type="button">Change</button>
+            <button id="button" type="button" @click="setData">Change</button>
         </div>
 
         <div class="picture">
-
+            <button id="button" type="button" @click="getData">get</button>
         </div>
     </div>
     <div class="container">
@@ -49,32 +49,48 @@
 
 <style scoped>
 .editForm {
-  display: inline-block;
-  text-align: right;
+    display: inline-block;
+    text-align: right;
 }
 
 .container {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
 }
 
 .save {
-  text-align: center;
+    text-align: center;
 }
 </style>
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, collection } from "firebase/firestore";
 const db = getFirestore(firebaseApp)
 
 export default {
     methods: {
+
+        async setData() {
+            const userRef = doc(db, "User", "testdata");
+            await setDoc(userRef, {
+                account: "E1234567@u.nus.edu",
+                nickname: "Shank",
+                phoneNumber: "00000000",
+                telegram: "@Shank"
+            });
+            console.log("Document written with ID testdata");
+        },
+
         async editProfile() {
             //need to get data from db based on account
-
+            const querySnapshot = await getDocs(collection(db, "User"));
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, "=>", doc.data());
+            });
+            
+            
             //update new account
             console.log("IN AC")
             let account = document.getElementById("account").value;

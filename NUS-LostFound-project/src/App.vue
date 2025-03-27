@@ -1,19 +1,16 @@
 
 
 <template>
-   <Home />
-   <Login /> # Will be in separate page require router navigation in the final product, currently for testing
+   <Settings />
 </template>
 
 <script>
-import Login from '@/components/Login.vue';
-import Home from './components/Home.vue';
+import Settings from '@/components/Settings.vue';
 
 export default {
   name: 'App',
   components: {
-    Login,
-    Home,
+    Settings
   },
 };
 </script>
