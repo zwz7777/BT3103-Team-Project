@@ -1,28 +1,29 @@
 <template>
-   <Home />
-   <Login /> # Will be in separate page require router navigation in the final product, currently for testing
-   <Sidebar />
-    <div class="main-content">
-      <router-view/>
-    </div>
+  <Entrance />
+  <Login /> # Will be in separate page require router navigation in the final product, currently for testing
+  <Sidebar />
+   <div class="main-content">
+     <router-view/>
+   </div>
 </template>
 
 <script>
 import Login from '@/components/Login.vue';
-import Home from './views/Home.vue';
+import Entrance from './views/Entrance.vue';
+import Sidebar from './components/Sidebar.vue';
 
 export default {
-  name: 'App',
-  components: {
-    Login,
-    Home,
-  },
+ name: 'App',
+ components: {
+   Login,
+   Entrance,
+ },
 };
 </script>
 
 <style>
 /* Optional global styles */
 #app {
-  min-height: 100vh;
+ min-height: 100vh;
 }
 </style>
