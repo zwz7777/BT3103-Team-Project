@@ -27,6 +27,6 @@ export default {
 <style>
 /* Optional global styles */
 #app {
- min-height: 100vh;
+  min-height: 100vh;
 }
 </style>
