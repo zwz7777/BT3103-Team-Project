@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Sidebar />
-
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
       <p>* Only urgent items are displayed here.</p>
@@ -15,14 +13,9 @@
 </template>
 
 <script>
-import Sidebar from '@/components/Sidebar.vue';
-
 export default {
   name: "Home",
-  components: {
-    Sidebar,
-  },
-};
+}
 </script>
 
 <style scoped>
@@ -57,4 +50,3 @@ export default {
   margin-bottom: 5px;
 }
 </style>
-` `
