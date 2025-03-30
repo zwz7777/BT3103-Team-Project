@@ -1,6 +1,4 @@
 <template>
-  <Entrance />
-  <ReportLostItems />
   <Sidebar />
    <div class="main-content">
      <router-view/>

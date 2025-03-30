@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import ReportLost from '@/views/ReportLostItems.vue'
+import ReportItemForm from '@/views/ReportItemForm.vue'
 import Lost from '@/views/LostPage.vue'
 import Found from '@/views/FoundPage.vue'
 import Settings from '@/views/Settings.vue'
@@ -18,9 +19,15 @@ const routes = [
         component: LoginPage
     },
     {
-        path: '/ReportLostItems',
+        path: '/report',
         name: 'Report Lost Items',
         component: ReportLost
+    },
+    { 
+        path: '/report/:formType', 
+        name: 'ReportItemForm', 
+        component: ReportItemForm, 
+        props: true 
     },
     {
         path: '/lostpage',
@@ -28,7 +35,7 @@ const routes = [
         component: Lost
     },
     {
-        path: '/FoundPage',
+        path: '/foundpage',
         name: 'Found Item List',
         component: Found
     },
