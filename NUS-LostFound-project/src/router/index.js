@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import LoginPage from '@/views/LoginPage.vue'
-import ReportLost from '@/views/ReportLost.vue'
+import ReportLost from '@/views/ReportLostItems.vue'
 import Lost from '@/views/LostPage.vue'
 import Found from '@/views/FoundPage.vue'
 import Settings from '@/views/Settings.vue'
@@ -18,7 +18,7 @@ const routes = [
         component: LoginPage
     },
     {
-        path: '/ReportLost',
+        path: '/ReportLostItems',
         name: 'Report Lost Items',
         component: ReportLost
     },
