@@ -5,12 +5,18 @@ import ReportLost from '@/views/ReportLostItems.vue'
 import Lost from '@/views/LostPage.vue'
 import Found from '@/views/FoundPage.vue'
 import Settings from '@/views/Settings.vue'
+import Entrance from '@/views/Entrance.vue'
 
 const routes = [
     {
-        path: '/',
+        path: '/home',
         name: 'Home',
         component: Home
+    },
+    {
+        path: '/entrance',
+        name: 'Entrance',
+        component: Entrance
     },
     {
         path: '/login',
