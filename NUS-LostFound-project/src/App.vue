@@ -2,11 +2,11 @@
   <div id="app">
     <Sidebar />
     <div class="main-container">
+        <router-view />
+    </div>
+    <div class="main-content">
       <Entrance />
       <ReportLostItems />
-      <div class="main-content">
-        <router-view />
-      </div>
     </div>
   </div>
 </template>
@@ -31,5 +31,10 @@ export default {
 #app {
   display: flex;
   min-height: 100vh;
+}
+.main-container {
+  flex: 1;
+  margin-left: 250px;  /* Make room for sidebar */
+  padding: 20px;
 }
 </style>
