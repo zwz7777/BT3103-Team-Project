@@ -12,35 +12,35 @@
   </template>
   
   <style scoped>
-.sidebar {
-  width: 250px;
-  height: 100vh;
-  background-color: rgba(0, 85, 255, 0.74);
-  padding-top: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-li {
-  padding: 15px;
-  text-align: left; 
-}
-
-a {
-  text-decoration: none;
-  color: white; 
-  display: block; 
-  padding: 10px; 
-}
-
-a:hover {
-  background-color: darkblue; 
-}
-</style>
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: rgba(0, 85, 255, 0.74);
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+  }
+  
+  a:hover {
+    background-color: darkblue;
+  }
+  </style>
