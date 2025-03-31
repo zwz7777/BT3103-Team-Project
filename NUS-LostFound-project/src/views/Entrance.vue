@@ -18,7 +18,7 @@
   
     <!-- Button Container at the Bottom -->
     <div class="button-container">
-      <h1>Click here to login > ></h1>
+      <h1><router-link to="/login">Click here to login > ></router-link></h1>
     </div>
 </template>
 
