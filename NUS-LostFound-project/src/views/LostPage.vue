@@ -1,19 +1,36 @@
 <template>
   <div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <label for="color-filter">Color: </label>
+      <select v-model="selectedColor" id="color-filter">
+        <option value="">All</option>
+        <option v-for="color in uniqueColors" :key="color" :value="color">{{ color }}</option>
+      </select>
+
+      <label for="faculty-filter">Faculty: </label>
+      <select v-model="selectedFaculty" id="faculty-filter">
+        <option value="">All</option>
+        <option v-for="faculty in uniqueFaculties" :key="faculty" :value="faculty">{{ faculty }}</option>
+      </select>
+    </div>
+
     <h1 class="title">Lost Items</h1>
-    <div v-for="item in lostItems" :key="item.id" class="item-bar">
-      <!-- First Line: Keywords -->
-      <div class="keywords">
-        <span v-for="(value, key) in item.keywords" :key="key" class="keyword">
-          {{ key }}: {{ value }}
-        </span>
+    <div class="items-wrapper">
+      <div v-for="item in filteredItems" :key="item.id" class="item-bar">
+        <!-- First Line: Keywords -->
+        <div class="keywords">
+          <span v-for="(value, key) in item.keywords" :key="key" class="keyword">
+            {{ key }}: {{ value }}
+          </span>
+        </div>
+
+        <!-- Second Line: Location -->
+        <p class="location">Location: {{ item.location }}</p>
+
+        <!-- Third Line: Description -->
+        <p class="description">Description: {{ item.description }}</p>
       </div>
-
-      <!-- Second Line: Location -->
-      <p class="location">Location: {{ item.location }}</p>
-
-      <!-- Third Line: Description -->
-      <p class="description">Description: {{ item.description }}</p>
     </div>
   </div>
 </template>
@@ -23,6 +40,8 @@ export default {
   name: 'LostPage',
   data() {
     return {
+      selectedColor: '',
+      selectedFaculty: '',
       lostItems: [
         {
           id: 1,
@@ -46,6 +65,26 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    // Get unique colors from the items
+    uniqueColors() {
+      const colors = new Set(this.lostItems.map(item => item.keywords.Color));
+      return Array.from(colors);
+    },
+    // Get unique faculties from the items
+    uniqueFaculties() {
+      const faculties = new Set(this.lostItems.map(item => item.keywords.Faculty));
+      return Array.from(faculties);
+    },
+    // Filtered items based on selected filters
+    filteredItems() {
+      return this.lostItems.filter(item => {
+        const matchesColor = this.selectedColor ? item.keywords.Color === this.selectedColor : true;
+        const matchesFaculty = this.selectedFaculty ? item.keywords.Faculty === this.selectedFaculty : true;
+        return matchesColor && matchesFaculty;
+      });
+    }
   }
 };
 </script>
@@ -55,25 +94,56 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title {
-  text-align: center;
   font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.filter-section {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
+.filter-section label {
+  font-size: 1rem;
+}
+
+.filter-section select {
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.items-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .item-bar {
+  width: 100%;
+  max-width: 500px;
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
   background-color: #DCE6FF;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
 }
 
 .keywords {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 8px;
 }
