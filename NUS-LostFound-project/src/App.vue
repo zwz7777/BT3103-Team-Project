@@ -1,21 +1,40 @@
 <template>
-   <Settings /> # Will be in separate page require router navigation in the final product, currently for testing
+  <div id="app">
+    <Sidebar />
+    <div class="main-container">
+        <router-view />
+    </div>
+    <div class="main-content">
+      <Entrance />
+      <ReportLostItems />
+    </div>
+  </div>
 </template>
 
 <script>
-import Settings from './components/Settings.vue';
+import ReportLostItems from './views/ReportLostItems.vue';
+import Entrance from './views/Entrance.vue';
+import Sidebar from './components/Sidebar.vue';
 
 export default {
-  name: 'App',
-  components: {
-    Settings
-  },
+ name: 'App',
+ components: {
+   Entrance,
+   ReportLostItems,
+   Sidebar
+ },
 };
 </script>
 
 <style>
 /* Optional global styles */
 #app {
+  display: flex;
   min-height: 100vh;
+}
+.main-container {
+  flex: 1;
+  margin-left: 250px;  /* Make room for sidebar */
+  padding: 20px;
 }
 </style>
