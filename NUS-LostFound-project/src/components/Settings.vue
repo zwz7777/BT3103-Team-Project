@@ -14,12 +14,13 @@
         </div>
     </div>
     <div class="container">
-        <h2>Personal information</h2>
+        <h1>Personal information</h1>
+        <p>
+            Account: {{ account }}
+        </p>
         <div class="editForm">
+            <h2>Edit Profile</h2>
             <form id="userForm">
-                <label for="account">Account: </label>
-                <input type="text" id="account" required=" " placeholder="E*******@u.nus.edu" />
-                <br /><br />
 
                 <label for="nickname">Nickname: </label>
                 <input type="text" id="nickname" required=" " placeholder="Enter your nickname" />
@@ -31,11 +32,11 @@
                 <br /><br />
 
                 <label for="telegram">Telegram Handle: </label>
-                <input type="number" id="telegram" required=" " placeholder="@xxxxx" />
+                <input type="text" id="telegram" required=" " placeholder="@xxxxx" />
                 <br /><br />
 
                 <div class="save">
-                    <button id="savebutton" type="button" v-on:click="editProfile"> Edit Profile </button>
+                    <button id="savebutton" type="button" v-on:click="editProfile"> Save </button>
                 </div>
             </form>
         </div>
@@ -47,29 +48,19 @@
     <button id="button" type="button">Click here</button>
 </template>
 
-<style scoped>
-.editForm {
-    display: inline-block;
-    text-align: right;
-}
-
-.container {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-}
-
-.save {
-    text-align: center;
-}
-</style>
+<style scoped></style>
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore, doc, setDoc, getDocs, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, collection, getDoc } from "firebase/firestore";
 const db = getFirestore(firebaseApp)
 
 export default {
+    data() {
+        return {
+            account: ""
+        };
+    },
     methods: {
 
         async setData() {
@@ -82,33 +73,44 @@ export default {
             });
             console.log("Document written with ID testdata");
         },
+        async fetchData() {
+            const userRef = doc(db, "User", "testdata");
+            const docSnap = await getDoc(userRef);
+
+            if (docSnap.exists()) {
+                this.account = docSnap.data().account;
+
+            } else {
+                console.log("No such document!");
+            }
+        },
 
         async editProfile() {
             //need to get data from db based on account
-            const querySnapshot = await getDocs(collection(db, "User"));
-            querySnapshot.forEach((doc) => {
-                console.log(doc.id, "=>", doc.data());
-            });
-            
-            
+
             //update new account
             console.log("IN AC")
-            let account = document.getElementById("account").value;
+            let account = this.account;
             let nickname = document.getElementById("nickname").value;
             let phoneNumber = document.getElementById("phoneNumber").value;
             let telegram = document.getElementById("telegram").value;
             alert(" Updating your data : " + account);
             try {
-                const docRef = await setDoc(doc(db, "User", account), {
-                    Account: account, Nickname: nickname, PhoneNumber: phoneNumber, Telegram: telegram
-                })
-                console.log(docRef)
+                await setDoc(doc(db, "User", account), {
+                    Nickname: nickname,
+                    PhoneNumber: phoneNumber,
+                    Telegram: telegram
+                }, { merge: true });
+
+                console.log("Document updated for account: ", account);
                 document.getElementById('userForm').reset();
-                //this.$emit("added")
             } catch (error) {
-                console.log("Error adding document: ", error)
+                console.error("Error updating document: ", error);
             }
         }
+    },
+    mounted() {
+        this.fetchData();
     }
-}
+};
 </script>
