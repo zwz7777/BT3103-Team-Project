@@ -16,11 +16,18 @@
     <div class="container">
         <h1>Personal information</h1>
         <p>
-            Account: {{ account }}
+            Account: {{ id }} <br><br>
+            Email Address: {{ email }} <br><br>
+            Nickname: {{ nickName }} <br><br>
+            Phone Number: {{ phoneNumber }} <br><br>
+            Telegram: {{ telegram }} <br><br>
         </p>
         <div class="editForm">
             <h2>Edit Profile</h2>
             <form id="userForm">
+                <label for="email">Email Address: </label>
+                <input type="text" id="email" required=" " placeholder="EXXXXXXX@u.nus.edu" />
+                <br /><br />
 
                 <label for="nickname">Nickname: </label>
                 <input type="text" id="nickname" required=" " placeholder="Enter your nickname" />
@@ -58,56 +65,70 @@ const db = getFirestore(firebaseApp)
 export default {
     data() {
         return {
-            account: ""
+            id: "testID",
+            email: "E1234567@u.nus.edu",
+            nickname: "",
+            phoneNumber: "",
+            telegram: ""
         };
     },
     methods: {
-
         async setData() {
-            const userRef = doc(db, "User", "testdata");
+            const userRef = doc(db, "User", this.id);
+            // const userRef = doc(db, "User", user.uid);
             await setDoc(userRef, {
-                account: "E1234567@u.nus.edu",
-                nickname: "Shank",
-                phoneNumber: "00000000",
-                telegram: "@Shank"
+                email: "E1234567@u.nus.edu",
+                nickname: "",
+                phoneNumber: "",
+                telegram: ""
             });
-            console.log("Document written with ID testdata");
+            console.log("Document written");
         },
         async fetchData() {
-            const userRef = doc(db, "User", "testdata");
+            const userRef = doc(db, "User", this.id);
             const docSnap = await getDoc(userRef);
 
             if (docSnap.exists()) {
-                this.account = docSnap.data().account;
-
+                this.email = docSnap.data().email;
+                this.nickName = docSnap.data().nickname;
+                this.phoneNumber = docSnap.data().phoneNumber;
+                this.telegram = docSnap.data().telegram;
             } else {
                 console.log("No such document!");
             }
         },
 
         async editProfile() {
-            //need to get data from db based on account
+            console.log("IN AC");
 
-            //update new account
-            console.log("IN AC")
-            let account = this.account;
-            let nickname = document.getElementById("nickname").value;
-            let phoneNumber = document.getElementById("phoneNumber").value;
-            let telegram = document.getElementById("telegram").value;
-            alert(" Updating your data : " + account);
+            const emailInput = document.getElementById("email").value;
+            const nicknameInput = document.getElementById("nickname").value;
+            const phoneNumberInput = document.getElementById("phoneNumber").value;
+            const telegramInput = document.getElementById("telegram").value;
+
+            const updatedData = {};
+
+            if (emailInput && emailInput !== this.email) updatedData.email = emailInput;
+            if (nicknameInput && nicknameInput !== this.nickname) updatedData.nickname = nicknameInput;
+            if (phoneNumberInput && phoneNumberInput !== this.phoneNumber) updatedData.phoneNumber = phoneNumberInput;
+            if (telegramInput && telegramInput !== this.telegram) updatedData.telegram = telegramInput;
+
+            if (Object.keys(updatedData).length === 0) {
+                alert("No changes detected.");
+                return;
+            }
+
+            alert("Updating your data: " + this.id);
+
             try {
-                await setDoc(doc(db, "User", account), {
-                    Nickname: nickname,
-                    PhoneNumber: phoneNumber,
-                    Telegram: telegram
-                }, { merge: true });
-
-                console.log("Document updated for account: ", account);
+                await setDoc(doc(db, "User", this.id), updatedData, { merge: true });
+                console.log("Document updated for account:", this.id);
                 document.getElementById('userForm').reset();
             } catch (error) {
                 console.error("Error updating document: ", error);
             }
         }
+
     },
     mounted() {
         this.fetchData();
