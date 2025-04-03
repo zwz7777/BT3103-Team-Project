@@ -78,11 +78,11 @@
 </style>
 
 <script>
-import firebaseApp from '../firebase.js';
+// import firebaseApp from '../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
-const db = getFirestore(firebaseApp)
+// const db = getFirestore(firebaseApp)
 
 export default {
     data() {

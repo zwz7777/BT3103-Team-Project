@@ -1,14 +1,8 @@
 <template>
-  <div id="app">
-    <Sidebar />
-    <div class="main-container">
-        <router-view />
-    </div>
-    <div class="main-content">
-      <Entrance />
-      <ReportLostItems />
-    </div>
-  </div>
+  <Sidebar />
+   <div class="main-content">
+     <router-view/>
+   </div>
 </template>
 
 <script>

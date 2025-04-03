@@ -30,6 +30,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-left: 300px;
   }
   
   .choose-btns {
@@ -47,6 +48,7 @@
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s;
+
   }
   
   .choose-btns button:hover {
