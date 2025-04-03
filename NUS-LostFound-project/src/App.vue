@@ -23,6 +23,12 @@ export default {
 <style>
 /* Optional global styles */
 #app {
+  display: flex;
   min-height: 100vh;
+}
+.main-container {
+  flex: 1;
+  margin-left: 250px;  /* Make room for sidebar */
+  padding: 20px;
 }
 </style>

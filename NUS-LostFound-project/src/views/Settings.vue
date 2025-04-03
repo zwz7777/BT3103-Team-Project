@@ -1,68 +1,79 @@
 <template>
-  <div class="container">
-      <div class="Settings">
-          <h1>Settings</h1>
-      </div>
+    <div class="container">
+        <div class="Settings">
+            <h1>Settings</h1>
+        </div>
 
-      <div class="profile">
-          <h1 id="profileHeading">Your Profile</h1>
-          <button id="button" type="button">Change</button>
-      </div>
+        <!--
+<div class="profile">
+    <h1 id="profileHeading">Your Profile</h1>
+    <button id="button" type="button" @click="setData">Change</button>
+</div>
 
-      <div class="picture">
+<div class="picture">
+    <button id="button" type="button" @click="getData">get</button>
+</div>
+-->
 
-      </div>
-  </div>
-  <Logout />
-  <div class="container">
-      <h2>Personal information</h2>
-      <div class="editForm">
-          <form id="userForm">
-              <label for="account">Account: </label>
-              <input type="text" id="account" required=" " placeholder="E*******@u.nus.edu" />
-              <br /><br />
+    </div>
+    <Logout />
+    <div class="container">
+        <h1>Personal information</h1>
+        <p>
+            Account: {{ id }} <br><br>
+            Email Address: {{ email }} <br><br>
+            Nickname: {{ nickName }} <br><br>
+            Phone Number: {{ phoneNumber }} <br><br>
+            Telegram: {{ telegram }} <br><br>
+        </p>
+        <div class="editForm">
+            <h2>Edit Profile</h2>
+            <form id="userForm">
+                <label for="email">Email Address: </label>
+                <input type="text" id="email" required=" " placeholder="EXXXXXXX@u.nus.edu" />
+                <br /><br />
 
-              <label for="nickname">Nickname: </label>
-              <input type="text" id="nickname" required=" " placeholder="Enter your nickname" />
-              <br /><br />
+                <label for="nickname">Nickname: </label>
+                <input type="text" id="nickname" required=" " placeholder="Enter your nickname" />
+                <br /><br />
 
-              <label for="phoneNumber">Phone Number: </label>
-              <input type="text" id="phoneNumber" required=" " placeholder="XXXXXXXX" pattern="\d{8}$"
-                  maxlength="8" />
-              <br /><br />
+                <label for="phoneNumber">Phone Number: </label>
+                <input type="text" id="phoneNumber" required=" " placeholder="XXXXXXXX" pattern="\d{8}$"
+                    maxlength="8" />
+                <br /><br />
 
-              <label for="telegram">Telegram Handle: </label>
-              <input type="number" id="telegram" required=" " placeholder="@xxxxx" />
-              <br /><br />
+                <label for="telegram">Telegram Handle: </label>
+                <input type="text" id="telegram" required=" " placeholder="@xxxxx" />
+                <br /><br />
 
-              <div class="save">
-                  <button id="savebutton" type="button" v-on:click="editProfile"> Edit Profile </button>
-              </div>
-          </form>
-      </div>
-  </div>
-  <h2>Change Password</h2>
-  <button id="button" type="button">Click here</button>
+                <div class="save">
+                    <button id="savebutton" type="button" v-on:click="editProfile"> Save </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <h2>Change Password</h2>
+    <button id="button" type="button">Click here</button>
 
-  <h2>Log Out</h2>
-  <Logout />
-  <!-- <button id="button" type="button">Click here</button> -->
+    <h2>Log Out</h2>
+    <Logout />
+    <!-- <button id="button" type="button">Click here</button> -->
 </template>
 
 <style scoped>
 .editForm {
-display: inline-block;
-text-align: right;
+    display: inline-block;
+    text-align: right;
 }
 
 .container {
-display: flex;
-width: 100%;
-flex-direction: column;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
 }
 
 .save {
-text-align: center;
+    text-align: center;
 }
 </style>
 
@@ -74,31 +85,75 @@ import Logout from '@/components/Logout.vue';
 // const db = getFirestore(firebaseApp)
 
 export default {
-  methods: {
-      async editProfile() {
-          //need to get data from db based on account
+    data() {
+        return {
+            id: "testID",
+            email: "E1234567@u.nus.edu",
+            nickname: "",
+            phoneNumber: "",
+            telegram: ""
+        };
+    },
+    components: {
+        Logout
+    },
+    methods: {
+        async setData() {
+            const userRef = doc(db, "User", this.id);
+            await setDoc(userRef, {
+                email: "E1234567@u.nus.edu",
+                nickname: "",
+                phoneNumber: "",
+                telegram: ""
+            });
+            console.log("Document written");
+        },
+        async fetchData() {
+            const userRef = doc(db, "User", this.id);
+            const docSnap = await getDoc(userRef);
 
-          //update new account
-          console.log("IN AC")
-          let account = document.getElementById("account").value;
-          let nickname = document.getElementById("nickname").value;
-          let phoneNumber = document.getElementById("phoneNumber").value;
-          let telegram = document.getElementById("telegram").value;
-          alert(" Updating your data : " + account);
-          try {
-              const docRef = await setDoc(doc(db, "User", account), {
-                  Account: account, Nickname: nickname, PhoneNumber: phoneNumber, Telegram: telegram
-              })
-              console.log(docRef)
-              document.getElementById('userForm').reset();
-              //this.$emit("added")
-          } catch (error) {
-              console.log("Error adding document: ", error)
-          }
-      }
-  },
-  components: {
-      Logout
-  }
-}
+            if (docSnap.exists()) {
+                this.email = docSnap.data().email;
+                this.nickname = docSnap.data().nickname;
+                this.phoneNumber = docSnap.data().phoneNumber;
+                this.telegram = docSnap.data().telegram;
+            } else {
+                console.log("No such document!");
+            }
+        },
+        async editProfile() {
+            console.log("IN AC");
+
+            const emailInput = document.getElementById("email").value;
+            const nicknameInput = document.getElementById("nickname").value;
+            const phoneNumberInput = document.getElementById("phoneNumber").value;
+            const telegramInput = document.getElementById("telegram").value;
+
+            const updatedData = {};
+
+            if (emailInput && emailInput !== this.email) updatedData.email = emailInput;
+            if (nicknameInput && nicknameInput !== this.nickname) updatedData.nickname = nicknameInput;
+            if (phoneNumberInput && phoneNumberInput !== this.phoneNumber) updatedData.phoneNumber = phoneNumberInput;
+            if (telegramInput && telegramInput !== this.telegram) updatedData.telegram = telegramInput;
+
+            if (Object.keys(updatedData).length === 0) {
+                alert("No changes detected.");
+                return;
+            }
+
+            alert("Updating your data: " + this.id);
+
+            try {
+                await setDoc(doc(db, "User", this.id), updatedData, { merge: true });
+                console.log("Document updated for account:", this.id);
+                document.getElementById('userForm').reset();
+            } catch (error) {
+                console.error("Error updating document: ", error);
+            }
+        }
+    },
+    mounted() {
+        this.fetchData();
+    }
+};
 </script>
