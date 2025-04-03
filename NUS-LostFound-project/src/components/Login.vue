@@ -7,9 +7,11 @@
   
   <script>
   import firebase from '@/uifire.js'
+  import { db } from '@/firebase.js'
   import 'firebase/compat/auth';
   import * as firebaseui from 'firebaseui';
   import 'firebaseui/dist/firebaseui.css';
+  import { serverTimestamp, doc, getDoc, setDoc } from 'firebase/firestore';
   
   export default {
     name: 'Login',
@@ -21,12 +23,40 @@
             ui = new firebaseui.auth.AuthUI(firebase.auth());
         }
         var uiConfig = {
-            signInSuccessUrl: '/',
             signInOptions: [
                 firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            ]
-        };
+            ],
+            callbacks: {
+              signInSuccessWithAuthResult: async (authResult) => {
+                const user = authResult.user;
 
+                try {
+                  if (user) {
+                    const userRef = doc(db, 'User', user.uid);
+                    const docSnap = await getDoc(userRef);
+
+                    if (!docSnap.exists()) {
+                      // Update Firestore before any navigation
+                      await setDoc(userRef, {
+                        uid: user.uid,
+                        email: user.email,
+                        createdAt: serverTimestamp(),
+                      });
+                      console.log('Firestore updated successfully');
+                      // console.log(user)
+                    }
+
+                    // Manually navigate after Firestore update
+                    this.$router.push('/'); 
+                  }
+                } catch (error) {
+                  console.error('Error updating Firestore:', error);
+                }
+
+                return false; // Prevent automatic redirect by FirebaseUI
+              },
+            },
+          };
         ui.start('#firebaseui-auth-container', uiConfig);
 
     }
