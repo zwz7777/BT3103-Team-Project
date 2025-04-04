@@ -97,6 +97,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-left: 260px; /* Same margin as sidebar*/
 }
 
 .title {
