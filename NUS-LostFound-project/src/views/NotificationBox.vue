@@ -1,39 +1,50 @@
 <template>
-    <div class="notification-page">
-      <h1>Notifications</h1>
-      <div v-if="notifications.length === 0" class="no-notifications">
-        <p>No notifications yet.</p>
-      </div>
-      <div v-else>
-        <div
-          v-for="notification in notifications"
-          :key="notification.id"
-          class="notification"
-          :class="{ seen: notification.seen }"
-        >
-          <div class="message">{{ notification.message }}</div>
-          <div class="timestamp">{{ formatTimestamp(notification.timestamp) }}</div>
-          <button @click="markAsRead(notification.id)">Mark as read</button>
+    <div class="notification-container">
+      <Sidebar />  <!-- Sidebar should appear here -->
+      <div class="notification-content">
+        <h1>Notifications</h1>
+        <div v-if="notifications.length === 0" class="no-notifications">
+          <p>No notifications yet.</p>
+        </div>
+        <div v-else>
+          <div
+            v-for="notification in notifications"
+            :key="notification.id"
+            class="notification"
+            :class="{ seen: notification.seen }"
+          >
+            <div class="message">{{ notification.message }}</div>
+            <div class="timestamp">{{ formatTimestamp(notification.timestamp) }}</div>
+            <button @click="markAsRead(notification.id)">Mark as read</button>
+          </div>
         </div>
       </div>
     </div>
   </template>
   
   <script>
-  export default {
+  import Sidebar from '@/components/Sidebar.vue';
+
+export default {
+  name: 'NotificationBox',
+
+  components: {
+    Sidebar,
+  },
+
     data() {
       return {
         notifications: [
           {
             id: "fakeNotification1",
             message: "User A has shared their contact information with you: 123-456-789",
-            timestamp: new Date(),
+            timestamp: new Date("2025-04-03T10:00:00"),
             seen: false,
           },
           {
             id: "fakeNotification2",
             message: "User B has shared their contact information with you: userB@example.com",
-            timestamp: new Date(),
+            timestamp: new Date("2025-04-02T14:30:00"),
             seen: false,
           },
         ],
@@ -51,7 +62,7 @@
           (notification) => notification.id === notificationId
         );
         if (notification) {
-          notification.seen = true;
+        notification.seen = !notification.seen;  // Toggle read/unread
         }
       },
     },
@@ -59,9 +70,15 @@
   </script>
   
   <style scoped>
-  .notification-page {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+  .notification-container {
+  display: flex;
+  padding: 20px;
+  }
+
+  .notification-content {
+  margin-left: 40px;  /* Sidebar width */
+  padding: 20px;
+  flex: 1;
   }
   
   h1 {

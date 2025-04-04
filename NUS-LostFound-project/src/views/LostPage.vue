@@ -31,6 +31,9 @@
 
         <!-- Third Line: Description -->
         <p class="description">Description: {{ item.description }}</p>
+
+        <!-- Button to trigger notification -->
+        <button @click="sendNotification(item)">Send Notification</button>
       </div>
     </div>
   </div>
@@ -92,8 +95,16 @@ export default {
         const matchesFaculty = this.selectedFaculty ? item.keywords.Faculty === this.selectedFaculty : true;
         return matchesColor && matchesFaculty;
       });
-    }
-  }
+    },
+  },
+  // methods: {
+  //   sendNotification(item) {
+  //     // Here you would typically send the notification to the user
+  //     // For now, we simulate the action and print the message to the console
+  //     console.log('Notification sent to', item.userContact);
+  //     alert(`Notification sent to ${item.userContact} with details about the item.`);
+  //   },
+  // },
 };
 </script>
 
@@ -105,7 +116,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 260px; /* Same margin as sidebar*/
+  margin-left: 40px; /* Same margin as sidebar*/
 }
 
 .title {
@@ -171,5 +182,13 @@ export default {
 
 .description {
   color: black;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0041a0;
 }
 </style>
