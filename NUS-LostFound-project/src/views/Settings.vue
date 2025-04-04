@@ -1,4 +1,5 @@
 <template>
+    <Sidebar />
     <div class="container">
         <div class="Settings">
             <h1>Settings</h1>
@@ -16,7 +17,11 @@
 -->
 
     </div>
-    <Logout />
+    <!--
+    <div class="container">
+        <Logout />
+    </div>
+    -->
     <div class="container">
         <h1>Personal information</h1>
         <p>
@@ -52,12 +57,16 @@
             </form>
         </div>
     </div>
-    <h2>Change Password</h2>
-    <button id="button" type="button">Click here</button>
 
-    <h2>Log Out</h2>
-    <Logout />
-    <!-- <button id="button" type="button">Click here</button> -->
+    <div class="container"> 
+        <h2>Change Password</h2>
+        <button id="button" type="button">Click here</button>
+
+        <h2>Log Out</h2>
+        <Logout />
+        <!-- <button id="button" type="button">Click here</button> -->
+    </div>
+    
 </template>
 
 <style scoped>
@@ -70,6 +79,8 @@
     display: flex;
     width: 100%;
     flex-direction: column;
+    margin-left: 260px;
+
 }
 
 .save {
@@ -82,6 +93,7 @@
 import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
+import Sidebar from "@/components/Sidebar.vue";
 // const db = getFirestore(firebaseApp)
 
 export default {
@@ -95,7 +107,8 @@ export default {
         };
     },
     components: {
-        Logout
+        Logout,
+        Sidebar
     },
     methods: {
         async setData() {

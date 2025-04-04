@@ -1,4 +1,5 @@
 <template>
+  <Sidebar />
   <div class="container">
     <!-- Filter Section -->
     <div class="filter-section">
@@ -39,8 +40,15 @@
 </template>
 
 <script>
+import Sidebar from "@/components/Sidebar.vue";
+
 export default {
   name: 'FoundPage',
+
+  components: {
+    Sidebar,
+  },
+
   data() {
     return {
       selectedColor: '',
@@ -107,8 +115,8 @@ export default {
   padding-left: 40px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* align items to the left */
-  box-sizing: border-box;
+  align-items: center;
+  margin-left: 260px; /* Same margin as sidebar*/
 }
 
 .title {

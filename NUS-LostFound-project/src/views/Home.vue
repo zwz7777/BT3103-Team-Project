@@ -1,4 +1,7 @@
 <template>
+
+  <Sidebar />
+
   <div>
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
@@ -36,8 +39,15 @@
 </template>
 
 <script>
+import Sidebar from "@/components/Sidebar.vue";
+
 export default {
   name: "Home",
+  
+  components: {
+    Sidebar,
+  },
+
   data() {
     return {
       highlightedItems: [

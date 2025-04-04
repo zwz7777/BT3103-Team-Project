@@ -1,10 +1,9 @@
 <template>
-  <div id="app">
-    <Sidebar />
-    <div class="main-content">
-      <router-view />
-    </div>
-  </div>
+
+   <div class="main-content">
+     <router-view/>
+   </div>
+
 </template>
 
 <script>
@@ -17,7 +16,6 @@ export default {
  components: {
    Entrance,
    ReportLostItems,
-   Sidebar
  },
 };
 </script>
