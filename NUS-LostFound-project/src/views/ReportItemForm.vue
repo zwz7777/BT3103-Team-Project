@@ -191,6 +191,7 @@ const handleSubmit = async () => {
 .found-lost-form {
   padding-top: 0.3rem;
   width: 100%;
+  margin-left: 260px; /* Same margin as sidebar*/
 }
 
 h2 {
