@@ -30,7 +30,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin-left: 300px;
+    /* margin-left: 300px; */
   }
   
   .choose-btns {

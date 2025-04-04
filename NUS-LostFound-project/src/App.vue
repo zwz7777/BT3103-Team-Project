@@ -1,8 +1,10 @@
 <template>
-  <Sidebar />
-   <div class="main-content">
-     <router-view/>
-   </div>
+  <div id="app">
+    <Sidebar />
+    <div class="main-content">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -26,7 +28,7 @@ export default {
   display: flex;
   min-height: 100vh;
 }
-.main-container {
+.main-content {
   flex: 1;
   margin-left: 250px;  /* Make room for sidebar */
   padding: 20px;
