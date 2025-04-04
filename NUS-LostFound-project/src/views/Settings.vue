@@ -1,4 +1,5 @@
 <template>
+    <Sidebar />
     <div class="container">
         <div class="Settings">
             <h1>Settings</h1>
@@ -92,6 +93,7 @@
 import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
+import Sidebar from "@/components/Sidebar.vue";
 // const db = getFirestore(firebaseApp)
 
 export default {
@@ -105,7 +107,8 @@ export default {
         };
     },
     components: {
-        Logout
+        Logout,
+        Sidebar
     },
     methods: {
         async setData() {

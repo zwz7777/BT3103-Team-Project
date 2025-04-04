@@ -1,5 +1,4 @@
 <template>
-  <Sidebar />
    <div class="main-content">
      <router-view/>
    </div>
@@ -15,7 +14,6 @@ export default {
  components: {
    Entrance,
    ReportLostItems,
-   Sidebar
  },
 };
 </script>

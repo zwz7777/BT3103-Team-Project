@@ -1,4 +1,5 @@
 <template>
+  <Sidebar />
   <div class="container">
     <!-- Filter Section -->
     <div class="filter-section">
@@ -36,8 +37,15 @@
 </template>
 
 <script>
+import Sidebar from '@/components/Sidebar.vue';
+
 export default {
   name: 'LostPage',
+
+  components: {
+    Sidebar,
+  },
+  
   data() {
     return {
       selectedColor: '',

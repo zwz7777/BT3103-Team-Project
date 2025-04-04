@@ -1,4 +1,5 @@
 <template>
+  <Sidebar />
   <div class="found-lost-form">
 
     <form @submit.prevent="handleSubmit" class="found-lost-form-container">
@@ -104,6 +105,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import SelectField from '@/components/SelectField.vue'
 import TypeField from '@/components/TypeField.vue'
+import Sidebar from '@/components/Sidebar.vue'
 
 // Receive "lost" or "found" from route param
 const props = defineProps({ formType: { type: String, default: 'lost' } })
