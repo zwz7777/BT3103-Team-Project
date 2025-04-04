@@ -7,6 +7,7 @@ import Lost from '@/views/LostPage.vue'
 import Found from '@/views/FoundPage.vue'
 import Settings from '@/views/Settings.vue'
 import Entrance from '@/views/Entrance.vue'
+import NotificationBox from '@/views/NotificationBox.vue'
 
 const routes = [
     {
@@ -44,6 +45,11 @@ const routes = [
         path: '/foundpage',
         name: 'Found Item List',
         component: Found
+    },
+    {
+        path: '/notifications',
+        name: 'Notifications',
+        component: NotificationBox
     },
     {
         path: '/settings',
