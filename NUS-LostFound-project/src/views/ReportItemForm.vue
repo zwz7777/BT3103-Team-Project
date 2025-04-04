@@ -66,6 +66,28 @@
         ></textarea>
       </TypeField>
 
+      <!-- URGENCY -->
+      <TypeField label="Urgency">
+        <div class="urgency-slider-wrapper">
+          <input
+            type="range"
+            v-model="formData.urgency"
+            min="1"
+            max="10"
+            step="1"
+            :style="sliderStyle"
+            class="urgency-slider"
+          />
+          <div class="urgency-scale-labels">
+            <span v-for="n in 10" :key="n">{{ n }}</span>
+          </div>
+          <div class="urgency-scale-labels">
+            <span>Least Urgent</span>
+            <span> Most Urgent</span>
+          </div>
+        </div>
+      </TypeField>
+
       <!-- SUBMIT -->
       <button type="submit" class="submit-button">
         Submit
@@ -75,7 +97,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { db, auth } from '@/firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -95,7 +117,8 @@ const formData = ref({
   color: '',
   faculty: '',
   location: '',
-  description: ''
+  description: '',
+  urgency: 5 // by default, medium urgency 
 })
 
 const pageTitle = computed(() =>
@@ -121,8 +144,10 @@ onAuthStateChanged(auth, (currentUser) => {
 // Submits to Firestore
 const handleSubmit = async () => {
   try {
+    // check whether the user is login
     if (!user.value) {
       alert('Please log in to submit a post.')
+      router.push('/')
       return
     }
     // add userId, timestamp
@@ -162,22 +187,24 @@ const handleSubmit = async () => {
 
 <style scoped>
 .found-lost-form {
-  padding-top: 2rem;
+  padding-top: 0.3rem;
+  width: 100%;
 }
 
 h2 {
   margin-bottom: 1rem;
   font-size: 1.5rem;
+  width: 300px;
 }
 
 .found-lost-form-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  max-width: 650px;
   background-color: #fff;
-  padding: 1rem;
-  max-width: 600px;
-  margin: 0 auto;
+  margin-left: 300px;
 }
 
 .first-line {
@@ -216,4 +243,59 @@ h2 {
   background-color: #185be1;
   color: white
 }
+
+.urgency-slider-wrapper {
+  background: white
+}
+.urgency-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 0.25rem;
+  color: #666;
+}
+.urgency-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background: #185be1;
+  outline: none;
+  transition: background 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.urgency-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  transition: border 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.urgency-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.urgency-slider::-webkit-slider-thumb:active {
+  box-shadow: 0 0 0 3px #185be1;
+}
+
+.urgency-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  color: #666;
+}
+
+.urgency-current {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
 </style>
