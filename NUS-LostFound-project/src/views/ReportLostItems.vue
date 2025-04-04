@@ -1,4 +1,5 @@
 <template>
+  <Sidebar />
     <div class="report-lost-items-page">
       <h2>Report Items</h2>
       <div class="choose-btns">
@@ -12,7 +13,8 @@
   </template>
   
   <script setup>
-  import { useRouter } from 'vue-router'
+  import Sidebar from '@/components/Sidebar.vue'
+import { useRouter } from 'vue-router'
   
   const router = useRouter()
   
