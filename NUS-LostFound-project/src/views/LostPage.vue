@@ -41,8 +41,10 @@
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
+
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase.js';
+
 
 export default {
   name: 'LostPage',
@@ -50,7 +52,6 @@ export default {
   components: {
     Sidebar,
   },
-
   data() {
     return {
       selectedColor: '',

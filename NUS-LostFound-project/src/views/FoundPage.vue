@@ -40,6 +40,7 @@
 </template>
 
 <script>
+
 import Sidebar from '@/components/Sidebar.vue';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase.js';
@@ -77,6 +78,7 @@ export default {
     },
   },
 
+
   mounted() {
     const foundItemsRef = collection(db, 'foundItems');
     onSnapshot(foundItemsRef, (snapshot) => {
@@ -86,7 +88,6 @@ export default {
       }));
     });
   },
-
   methods: {
     sendNotification(item) {
       console.log('Notification sent to', item.userContact);
@@ -105,6 +106,7 @@ export default {
   flex-direction: column;
   align-items: center;
   margin-left: 40px; /* Same margin as sidebar */
+
 }
 
 .title {

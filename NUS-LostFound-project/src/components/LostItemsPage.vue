@@ -14,6 +14,9 @@
   
         <!-- Third Line: Description -->
         <p class="description">Description: {{ item.description }}</p>
+
+        <!-- Button to trigger notification -->
+        <button @click="sendNotification(item)">Send Notification</button>
       </div>
     </div>
   </template>
