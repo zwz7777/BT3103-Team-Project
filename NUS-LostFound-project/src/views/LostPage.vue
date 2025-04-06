@@ -101,7 +101,6 @@ export default {
 .container {
   width: 100%;
   padding: 20px;
-  padding-left: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;

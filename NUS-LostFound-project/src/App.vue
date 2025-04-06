@@ -20,15 +20,3 @@ export default {
 };
 </script>
 
-<style>
-/* Optional global styles */
-#app {
-  display: flex;
-  min-height: 100vh;
-}
-.main-content {
-  flex: 1;
-  margin-left: 250px;  /* Make room for sidebar */
-  padding: 20px;
-}
-</style>

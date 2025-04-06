@@ -13,13 +13,15 @@
   
     <!-- Main Title -->
     <div class="web-title">
-      <h1>NUS Lost & Found</h1>
+      <h2>NUS Lost & Found</h2>
+      <h1><router-link to="/login" class="hover-link">Here to Login > ></router-link></h1>
+
+    </div>
+
+    <!-- Bottom -->
+    <div class="bottom">
     </div>
   
-    <!-- Button Container at the Bottom -->
-    <div class="button-container">
-      <h1><router-link to="/login">Click here to login > ></router-link></h1>
-    </div>
 </template>
 
 <script>
@@ -34,6 +36,7 @@ export default {
     toggleInfo() {
       this.showContactInfo = !this.showContactInfo;
     },
+
   },
 };
 </script>
@@ -43,7 +46,7 @@ export default {
   position: absolute;
   top: 5px;
   left: 10px; 
-  width: auto; /* Size determined by the content */
+  width: auto;
   height: auto;
   display: flex;
   justify-content: left;
@@ -52,14 +55,14 @@ export default {
 
 .contact-container h1 {
   margin-left: 20px;
-  font-size: 1em;
+  font-size: 1.5em;
 }
 
 .contact-info {
   position: absolute;
-  top: 35px;
+  top: 50px;
   left: 10px; 
-  font-size: 0.9em;
+  font-size: 1em;
   background-color: #f0f0f0; 
   padding: 20px;
   border-radius: 5px;
@@ -68,34 +71,41 @@ export default {
 
 .web-title {
   display: flex;
-  justify-content: right;
+  flex-direction: column;
+  align-items: flex-end;
   font-weight: bold;
   font-family: Arial, sans-serif;
 }
 
-.web-title h1 {
+.web-title h2 {
   margin-top: 200px;
-  margin-right: 20px;
-  font-size: 3em;
+  margin-right: 30px;
+  font-size: 4em;
   color: #0058b0;
 }
 
-.button-container {
+
+.web-title h1 {
+  color: rgb(255, 0, 195);
+  font-size: 1.8em;
+  margin-top: 50px;
+  margin-right: 50px;
+}
+
+.hover-link:hover {
+  color: rgb(166, 0, 255); 
+}
+
+
+.bottom {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 150px;
+  height: 200px;
   background-color: #0058b0;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.button-container h1 {
-  color: white;
-  font-size: 2em;
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 </style>
