@@ -5,6 +5,7 @@
         <li><router-link to="/report">Report Lost Items</router-link></li>
         <li><router-link to="/lostpage">Lost Item List</router-link></li>
         <li><router-link to="/foundpage">Found Item List</router-link></li>
+        <li><router-link to="/notifications">Notifications</router-link></li>
         <li><router-link to="/settings">Settings</router-link></li>
       </ul>
     </div>

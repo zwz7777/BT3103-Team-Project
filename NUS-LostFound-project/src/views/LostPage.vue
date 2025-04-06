@@ -19,11 +19,11 @@
     <h1 class="title">Lost Items</h1>
     <div class="items-wrapper">
       <div v-for="item in filteredItems" :key="item.id" class="item-bar">
-        <!-- First Line: Keywords -->
+        <!-- First Line: Category, Color, Faculty -->
         <div class="keywords">
-          <span v-for="(value, key) in item.keywords" :key="key" class="keyword">
-            {{ key }}: {{ value }}
-          </span>
+          <span v-if="item.category" class="keyword">Category: {{ item.category }}</span>
+          <span v-if="item.color" class="keyword">Color: {{ item.color }}</span>
+          <span v-if="item.faculty" class="keyword">Faculty: {{ item.faculty }}</span>
         </div>
 
         <!-- Second Line: Location -->
@@ -31,6 +31,9 @@
 
         <!-- Third Line: Description -->
         <p class="description">Description: {{ item.description }}</p>
+
+        <!-- Button to trigger notification -->
+        <button @click="sendNotification(item)">Send Notification</button>
       </div>
     </div>
   </div>
@@ -39,61 +42,58 @@
 <script>
 import Sidebar from '@/components/Sidebar.vue';
 
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/firebase.js';
+
+
 export default {
   name: 'LostPage',
 
   components: {
     Sidebar,
   },
-  
   data() {
     return {
       selectedColor: '',
       selectedFaculty: '',
-      lostItems: [
-        {
-          id: 1,
-          keywords: {
-            Category: 'student card',
-            Color: 'white',
-            Faculty: 'SOC'
-          },
-          location: 'Table at the Terrace, beside Smooy',
-          description: 'Student card of Goh ..., last 4 digits of student card is 045X'
-        },
-        {
-          id: 2,
-          keywords: {
-            Category: 'umbrella',
-            Color: 'black',
-            Faculty: 'Engineering'
-          },
-          location: 'Library entrance, next to the vending machines',
-          description: 'Black umbrella with silver handle, brand XYZ'
-        }
-      ]
+      lostItems: []
     };
   },
+
   computed: {
-    // Get unique colors from the items
     uniqueColors() {
-      const colors = new Set(this.lostItems.map(item => item.keywords.Color));
+      const colors = new Set(this.lostItems.map(item => item.color).filter(Boolean));
       return Array.from(colors);
     },
-    // Get unique faculties from the items
     uniqueFaculties() {
-      const faculties = new Set(this.lostItems.map(item => item.keywords.Faculty));
+      const faculties = new Set(this.lostItems.map(item => item.faculty).filter(Boolean));
       return Array.from(faculties);
     },
-    // Filtered items based on selected filters
     filteredItems() {
       return this.lostItems.filter(item => {
-        const matchesColor = this.selectedColor ? item.keywords.Color === this.selectedColor : true;
-        const matchesFaculty = this.selectedFaculty ? item.keywords.Faculty === this.selectedFaculty : true;
+        const matchesColor = this.selectedColor ? item.color === this.selectedColor : true;
+        const matchesFaculty = this.selectedFaculty ? item.Faculty === this.selectedFaculty : true;
         return matchesColor && matchesFaculty;
       });
-    }
-  }
+    },
+  },
+
+  mounted() {
+    const lostItemsRef = collection(db, 'lostItems');
+    onSnapshot(lostItemsRef, (snapshot) => {
+      this.lostItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    });
+  },
+
+  methods: {
+    sendNotification(item) {
+      console.log('Notification sent to', item.userContact);
+      alert(`Notification sent to ${item.userContact} with details about the item.`);
+    },
+  },
 };
 </script>
 
@@ -104,6 +104,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-left: 40px; /* Same margin as sidebar */
 }
 
 .title {
@@ -169,5 +170,13 @@ export default {
 
 .description {
   color: black;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0041a0;
 }
 </style>

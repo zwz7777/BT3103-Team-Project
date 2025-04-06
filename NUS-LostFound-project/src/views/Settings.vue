@@ -60,7 +60,7 @@
 
     <div class="container"> 
         <h2>Change Password</h2>
-        <button id="button" type="button">Click here</button>
+        <ChangePassWord />
 
         <h2>Log Out</h2>
         <Logout />
@@ -90,6 +90,7 @@ import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
 import Sidebar from "@/components/Sidebar.vue";
+import ChangePassWord from "@/components/ChangePassWord.vue";
 // const db = getFirestore(firebaseApp)
 
 export default {
@@ -104,7 +105,8 @@ export default {
     },
     components: {
         Logout,
-        Sidebar
+        Sidebar,
+        ChangePassWord
     },
     methods: {
         async setData() {
