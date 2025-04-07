@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router'
   
   .choose-btns button {
     background-color: #fff;
-    border: 2px solid #0335B4;
+    border: 2px solid #0058b0;
     color: black;
     padding: 1.75rem 3.25rem;
     font-size: 1rem;
@@ -54,7 +54,7 @@ import { useRouter } from 'vue-router'
   }
   
   .choose-btns button:hover {
-    background-color: #0335B4;
+    background-color: #0058b0;
     color: #fff;
   }
   </style>

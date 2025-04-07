@@ -73,6 +73,7 @@ export default {
   .notification-container {
   display: flex;
   padding: 20px;
+  margin-left: 260px; /* Same margin as sidebar*/
   }
 
   .notification-content {
@@ -111,7 +112,7 @@ export default {
   }
   
   button {
-    background-color: #0052cc;
+    background-color: #0058b0;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -121,7 +122,7 @@ export default {
   }
   
   button:hover {
-    background-color: #0041a0;
+    background-color: #f07e13; 
   }
   
   .notification.seen {

@@ -86,14 +86,23 @@ export default {
 
 
 .web-title h1 {
-  color: rgb(255, 0, 195);
   font-size: 1.8em;
   margin-top: 50px;
-  margin-right: 50px;
+  margin-right: 100px;
+  background-color: #458dda;
+  border: 2px solid #0058b0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-link {
+  color: white;
 }
 
 .hover-link:hover {
-  color: rgb(166, 0, 255); 
+  color: #f07e13; 
 }
 
 
