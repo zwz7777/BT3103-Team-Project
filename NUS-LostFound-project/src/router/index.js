@@ -8,6 +8,7 @@ import Found from '@/views/FoundPage.vue'
 import Settings from '@/views/Settings.vue'
 import Entrance from '@/views/Entrance.vue'
 import NotificationBox from '@/views/NotificationBox.vue'
+import MyPost from '@/views/MyPost.vue'
 
 const routes = [
     {
@@ -50,6 +51,11 @@ const routes = [
         path: '/notifications',
         name: 'Notifications',
         component: NotificationBox
+    },
+    {
+        path: '/mypost',
+        name: 'My Posts',
+        component: MyPost
     },
     {
         path: '/settings',
