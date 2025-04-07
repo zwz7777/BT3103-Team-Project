@@ -7,15 +7,18 @@
       <div v-if="showModal" class="modal-overlay">
         <div class="modal-content">
           <h2>Change Password</h2>
+          <br />
           <form @submit.prevent="handleChangePassword">
             <div>
-              <label>Current Password:</label>
+              <label>Current Password:  </label>
               <input type="password" v-model="currentPassword" required />
             </div>
+            <br />
             <div>
-              <label>New Password:</label>
+              <label>New Password:    </label>
               <input type="password" v-model="newPassword" required />
             </div>
+            <br />
             <div class="modal-buttons">
               <button type="submit">Submit</button>
               <button type="button" @click="closeModal">Cancel</button>
