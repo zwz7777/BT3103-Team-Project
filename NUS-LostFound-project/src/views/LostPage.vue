@@ -144,7 +144,7 @@ export default {
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
-  background-color: #DCE6FF;
+  background-color: #bddbf8;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
 }
@@ -157,7 +157,7 @@ export default {
 }
 
 .keyword {
-  background:#829CDDf0;
+  background:#458dda;
   color: white;
   padding: 4px 8px;
   border-radius: 8px;
@@ -177,6 +177,6 @@ button {
 }
 
 button:hover {
-  background-color: #0041a0;
+  background-color: #f07e13;
 }
 </style>

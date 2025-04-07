@@ -70,7 +70,9 @@
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    margin-top: 100px;
   }
+
   h2 {
     margin-bottom: 20px;
     font-size: 2em;

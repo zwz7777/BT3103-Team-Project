@@ -222,7 +222,7 @@ h2 {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
-  background-color: #185be1;
+  background-color: #0058b0;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -231,9 +231,9 @@ h2 {
 
 .form-toggle-wrapper button {
   padding: 0.3rem 0.7rem;
-  color: #185be1;
-  background-color: #fff;
-  border: 1px solid #185be1;
+  color: #fff;
+  background-color: #0058b0;
+  border: 1px solid #fff;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -243,8 +243,8 @@ h2 {
 }
 
 .form-toggle-wrapper button:hover {
-  background-color: #185be1;
-  color: white
+  background-color: #f07e13; 
+  color: white;
 }
 
 .urgency-slider-wrapper {
@@ -262,7 +262,7 @@ h2 {
   width: 100%;
   height: 6px;
   border-radius: 5px;
-  background: #185be1;
+  background: #0058b0;
   outline: none;
   transition: background 0.3s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -283,7 +283,7 @@ h2 {
 }
 
 .urgency-slider::-webkit-slider-thumb:active {
-  box-shadow: 0 0 0 3px #185be1;
+  box-shadow: 0 0 0 3px #0058b0;
 }
 
 .urgency-scale-labels {
