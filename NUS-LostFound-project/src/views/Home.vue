@@ -5,19 +5,19 @@
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
       <p>* Only urgent items are displayed here</p>
+      <p>* Both lost and found items are included</p>
     </div>
 
     <div class="highlighted-items">
       <h2>Highlighted Items</h2>
-      <p>This would be a list of urgent items that are currently lost or found. 
-        Need to integrate the database to display the items.</p>
+      <br />
 
       <div class="table-container">
         <table>
           <thead>
             <tr>
               <th>Time</th>
-              <th>Item</th>
+              <th>Item Details</th>
               <th>Location</th>
               <th>Faculty</th>
               <th>Status</th>
@@ -26,7 +26,7 @@
           <tbody>
             <tr v-for="(item, index) in highlightedItems" :key="index" class="border-b">
               <td>{{ item.time }}</td>
-              <td>{{ item.item }}</td>
+              <td>{{ item.description }}</td>
               <td>{{ item.location }}</td>
               <td>{{ item.faculty }}</td>
               <td>{{ item.status }}</td>
@@ -41,35 +41,60 @@
 
 <script>
 import Sidebar from "@/components/Sidebar.vue";
+import { db } from "@/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default {
   name: "Home",
-  
+
   components: {
     Sidebar,
   },
 
   data() {
     return {
-      highlightedItems: [
-        { time: "5 min", item: "Student ID card", location: "near Terrace", faculty: "SoC", status: "to be claimed" },
-        { time: "46 min", item: "Identity card", location: "near LT27", faculty: "FoS", status: "to be claimed" },
-        { time: "3 hrs", item: "Student ID card", location: "near LT18", faculty: "Biz", status: "to be found" },
-        { time: "11 hrs", item: "Laptop", location: "near HSSML", faculty: "Biz", status: "to be found" },
-        { time: "5 min", item: "Student ID card", location: "near Terrace", faculty: "SoC", status: "to be claimed" },
-        { time: "46 min", item: "Identity card", location: "near LT27", faculty: "FoS", status: "to be claimed" },
-        { time: "3 hrs", item: "Student ID card", location: "near LT18", faculty: "Biz", status: "to be found" },
-        { time: "11 hrs", item: "Laptop", location: "near HSSML", faculty: "Biz", status: "to be found" },
-        { time: "1 day", item: "Backpack", location: "near library", faculty: "SoC", status: "to be claimed" },
-        { time: "2 hrs", item: "Wallet", location: "near FASS", faculty: "FoE", status: "to be found" },
-        { time: "30 min", item: "Phone", location: "near CS Lab", faculty: "SoC", status: "to be claimed" },
-        { time: "5 hrs", item: "Keychain", location: "near Bukit Timah", faculty: "Law", status: "to be claimed" },
-        { time: "12 hrs", item: "Headphones", location: "near HSSML", faculty: "Biz", status: "to be claimed" },
-        { time: "6 hrs", item: "Umbrella", location: "near LT15", faculty: "SoC", status: "to be found" }
-      ]
+      highlightedItems: [],
     };
+  },
+
+  async mounted() {
+    try {
+      const items = [];
+
+      // Get each item
+      const processItems = async (collectionName) => {
+        const snapshot = await getDocs(collection(db, collectionName));
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const urgency = Number(data.urgency);
+          
+          if (urgency >= 6) {
+            items.push({
+              time: data.timestamp?.toDate().toLocaleString() || "N/A",
+              description: data.category + ": " + data.description || "N/A",
+              location: data.location || "N/A",
+              faculty: data.faculty || "N/A",
+              status: collectionName === "foundItems" ? "Found" : "Lost",
+            });
+          }
+        });
+      };
+
+      // Both foundItems and lostItems
+      await Promise.all([
+        processItems("foundItems"),
+        processItems("lostItems"),
+      ]);
+
+      items.sort((a, b) => b.status - a.status);
+
+      this.highlightedItems = items;
+    } catch (error) {
+      console.error("Error fetching urgent items:", error);
+    }
   }
-}
+};
+
 </script>
 
 <style scoped>
