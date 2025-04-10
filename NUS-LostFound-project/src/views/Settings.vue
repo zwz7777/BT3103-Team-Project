@@ -5,13 +5,6 @@
             <h1>Settings</h1>
         </div>
 
-        <!--
-<div class="profile">
-    <h1 id="profileHeading">Your Profile</h1>
-    <button id="button" type="button" @click="setData">Change</button>
-</div>
--->
-
     </div>
     <!--
     <div class="container">
@@ -21,7 +14,9 @@
     <div class="container">
         <h1>Personal information</h1>
         <p>
+            <!--
             Account: {{ uid }} <br><br>
+            -->
             Email Address: {{ email }} <br><br>
             Nickname: {{ nickname }} <br><br>
             Phone Number: {{ phoneNumber }} <br><br>
@@ -82,8 +77,8 @@
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore } from "firebase/firestore";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
 import Sidebar from "@/components/Sidebar.vue";
 import ChangePassWord from "@/components/ChangePassWord.vue";
@@ -92,7 +87,7 @@ const db = getFirestore(firebaseApp)
 export default {
     data() {
         return {
-            uid: "QiHKu0zEUPcYEWSbcvAPkXO1qWg1",
+            uid: "",
             email: "",
             nickname: "",
             phoneNumber: "",
@@ -123,10 +118,11 @@ export default {
             const docSnap = await getDoc(userRef);
 
             if (docSnap.exists()) {
-                this.email = docSnap.data().email;
-                this.nickname = docSnap.data().nickname;
-                this.phoneNumber = docSnap.data().phoneNumber;
-                this.telegram = docSnap.data().telegram;
+                const data = docSnap.data();
+                this.email = data.email || "";
+                this.nickname = data.nickname || "";
+                this.phoneNumber = data.phoneNumber || "";
+                this.telegram = data.telegram || "";
             } else {
                 console.log("No such document!");
             }
@@ -134,11 +130,6 @@ export default {
         async editProfile() {
             console.log("IN AC");
             console.log("Current UID:", this.uid);
-
-            //const auth = getAuth();
-            //const user = auth.currentUser;
-
-            //const uid = this.uid;
 
             const emailInput = document.getElementById("email").value;
             const nicknameInput = document.getElementById("nickname").value;
@@ -168,6 +159,17 @@ export default {
                 console.error("Error updating document: ", error);
             }
         }
+    },
+    mounted() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.uid = user.uid;
+                this.fetchData(); 
+            } else {
+                console.log("No user is logged in.");
+            }
+        });
     }
 };
 </script>
