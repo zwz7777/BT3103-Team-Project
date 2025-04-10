@@ -10,10 +10,6 @@
     <h1 id="profileHeading">Your Profile</h1>
     <button id="button" type="button" @click="setData">Change</button>
 </div>
-
-<div class="picture">
-    <button id="button" type="button" @click="getData">get</button>
-</div>
 -->
 
     </div>
@@ -172,11 +168,6 @@ export default {
                 console.error("Error updating document: ", error);
             }
         }
-    },
-    /*
-    mounted() {
-        this.fetchData();
     }
-        */
 };
 </script>
