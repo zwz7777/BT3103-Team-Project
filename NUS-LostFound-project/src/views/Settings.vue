@@ -5,17 +5,6 @@
             <h1>Settings</h1>
         </div>
 
-        <!--
-<div class="profile">
-    <h1 id="profileHeading">Your Profile</h1>
-    <button id="button" type="button" @click="setData">Change</button>
-</div>
-
-<div class="picture">
-    <button id="button" type="button" @click="getData">get</button>
-</div>
--->
-
     </div>
     <!--
     <div class="container">
@@ -25,9 +14,11 @@
     <div class="container">
         <h1>Personal information</h1>
         <p>
-            Account: {{ id }} <br><br>
+            <!--
+            Account: {{ uid }} <br><br>
+            -->
             Email Address: {{ email }} <br><br>
-            Nickname: {{ nickName }} <br><br>
+            Nickname: {{ nickname }} <br><br>
             Phone Number: {{ phoneNumber }} <br><br>
             Telegram: {{ telegram }} <br><br>
         </p>
@@ -85,19 +76,19 @@
 </style>
 
 <script>
-// import firebaseApp from '../firebase.js';
-import { getFirestore } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
+import firebaseApp from '../firebase.js';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
 import Sidebar from "@/components/Sidebar.vue";
 import ChangePassWord from "@/components/ChangePassWord.vue";
-// const db = getFirestore(firebaseApp)
+const db = getFirestore(firebaseApp)
 
 export default {
     data() {
         return {
-            id: "testID",
-            email: "E1234567@u.nus.edu",
+            uid: "",
+            email: "",
             nickname: "",
             phoneNumber: "",
             telegram: ""
@@ -109,31 +100,36 @@ export default {
         ChangePassWord
     },
     methods: {
+        /*
         async setData() {
-            const userRef = doc(db, "User", this.id);
+            const userRef = doc(db, "User", this.uid);
             await setDoc(userRef, {
-                email: "E1234567@u.nus.edu",
-                nickname: "",
-                phoneNumber: "",
-                telegram: ""
+                uid: this.uid,
+                email: "",
+                //nickname: "",
+                //phoneNumber: "",
+                //telegram: ""
             });
             console.log("Document written");
         },
+        */
         async fetchData() {
-            const userRef = doc(db, "User", this.id);
+            const userRef = doc(db, "User", this.uid);
             const docSnap = await getDoc(userRef);
 
             if (docSnap.exists()) {
-                this.email = docSnap.data().email;
-                this.nickname = docSnap.data().nickname;
-                this.phoneNumber = docSnap.data().phoneNumber;
-                this.telegram = docSnap.data().telegram;
+                const data = docSnap.data();
+                this.email = data.email || "";
+                this.nickname = data.nickname || "";
+                this.phoneNumber = data.phoneNumber || "";
+                this.telegram = data.telegram || "";
             } else {
                 console.log("No such document!");
             }
         },
         async editProfile() {
             console.log("IN AC");
+            console.log("Current UID:", this.uid);
 
             const emailInput = document.getElementById("email").value;
             const nicknameInput = document.getElementById("nickname").value;
@@ -152,11 +148,12 @@ export default {
                 return;
             }
 
-            alert("Updating your data: " + this.id);
+            alert("Updating your data: " + this.uid);
 
             try {
-                await setDoc(doc(db, "User", this.id), updatedData, { merge: true });
-                console.log("Document updated for account:", this.id);
+                await setDoc(doc(db, "User", this.uid), updatedData, { merge: true });
+                console.log("Document updated for account:", this.uid);
+                await this.fetchData();
                 document.getElementById('userForm').reset();
             } catch (error) {
                 console.error("Error updating document: ", error);
@@ -164,7 +161,15 @@ export default {
         }
     },
     mounted() {
-        this.fetchData();
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.uid = user.uid;
+                this.fetchData(); 
+            } else {
+                console.log("No user is logged in.");
+            }
+        });
     }
 };
 </script>
