@@ -1,65 +1,144 @@
 <template>
-
   <Sidebar />
 
   <div>
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
       <p>* Only urgent items are displayed here</p>
+      <p>* Both lost and found items are included</p>
     </div>
 
     <div class="highlighted-items">
       <h2>Highlighted Items</h2>
-      <p>This would be a list of urgent items that are currently lost or found. 
-        Need to integrate the database to display the items.</p>
+      <br />
 
+      <div class="table-container">
         <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Item</th>
-            <th>Location</th>
-            <th>Faculty</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in highlightedItems" :key="index" class="border-b">
-            <td>{{ item.time }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.location }}</td>
-            <td>{{ item.faculty }}</td>
-            <td>{{ item.status }}</td>
-          </tr>
-        </tbody>
-      </table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Item Details</th>
+              <th>Location</th>
+              <th>Faculty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in highlightedItems" :key="index" class="border-b">
+              <td>{{ item.time }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.location }}</td>
+              <td>{{ item.faculty }}</td>
+              <td>{{ item.status }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br />
+      <br />
+      <h2>Charts of All Lost & Found Items</h2>
 
     </div>
+
+    <div class="charts-container">
+      <h2>Faculty Distribution</h2>
+      <pie-chart :data="facultyData.length ? facultyData : [['No Data', 1]]" />
+      <br />
+      <br />
+      
+      <h2>Category Distribution</h2>
+      <pie-chart :data="categoryData.length ? categoryData : [['No Data', 1]]" />
+    </div>
+
   </div>
 </template>
 
+
 <script>
 import Sidebar from "@/components/Sidebar.vue";
+import { db } from "@/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import VueChartkick from 'vue-chartkick';
+import 'chartkick/chart.js';
 
 export default {
   name: "Home",
-  
+
   components: {
     Sidebar,
   },
 
   data() {
     return {
-      highlightedItems: [
-        { time: "5 min", item: "Student ID card", location: "near Terrace", faculty: "SoC", status: "to be claimed" },
-        { time: "46 min", item: "Identity card", location: "near LT27", faculty: "FoS", status: "to be claimed" },
-        { time: "3 hrs", item: "Student ID card", location: "near LT18", faculty: "Biz", status: "to be found" },
-        { time: "11 hrs", item: "Laptop", location: "near HSSML", faculty: "Biz", status: "to be found" }
-      ]
+      highlightedItems: [],
+      facultyData: [],
+      categoryData: [],
     };
+  },
+
+  async mounted() {
+    try {
+      const items = [];
+      const highlightedItems = [];
+      const facultyMap = new Map();
+      const categoryMap = new Map();
+
+      // Process Items (all items for the charts, urgent items for highlighted)
+      const processItems = async (collectionName) => {
+        const snapshot = await getDocs(collection(db, collectionName));
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const urgency = Number(data.urgency);
+
+          // Store all items for charts
+          items.push({
+            time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
+            description: data.category + ": " + data.description || "N/A",
+            location: data.location || "N/A",
+            faculty: data.faculty || "N/A",
+            status: collectionName === "foundItems" ? "Found" : "Lost",
+          });
+
+          // Count Faculty and Category for Pie Charts
+          facultyMap.set(data.faculty, (facultyMap.get(data.faculty) || 0) + 1);
+          categoryMap.set(data.category, (categoryMap.get(data.category) || 0) + 1);
+
+          // If urgent, add to highlightedItems
+          if (urgency >= 6) {
+            highlightedItems.push({
+              time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
+              description: data.category + ": " + data.description || "N/A",
+              location: data.location || "N/A",
+              faculty: data.faculty || "N/A",
+              status: collectionName === "foundItems" ? "Found" : "Lost",
+              urgency: urgency,
+            });
+          }
+        });
+      };
+
+      // Fetch both foundItems and lostItems
+      await Promise.all([
+        processItems("foundItems"),
+        processItems("lostItems"),
+      ]);
+
+      // Sort items by time (for highlighted items)
+      highlightedItems.sort((a, b) => b.urgency - a.urgency);
+
+      this.highlightedItems = highlightedItems;
+
+      // Prepare the data for Pie charts (all items)
+      this.facultyData = Array.from(facultyMap, ([name, data]) => [name, data]);
+      this.categoryData = Array.from(categoryMap, ([name, data]) => [name, data]);
+
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
   }
-}
+};
 </script>
+
 
 <style scoped>
 .home-container {
@@ -71,7 +150,7 @@ export default {
 }
 
 .home-container h1 {
-  color: #185be1;
+  color: #0058b0;
   font-size: 3em;
   margin-bottom: 5px;
 }
@@ -82,14 +161,35 @@ export default {
 }
 
 .highlighted-items {
-  margin-left: 260px; /* Same as home-container*/
+  margin-left: 260px;
   padding: 20px;
 }
 
 .highlighted-items h2 {
-  color: #185be1;
+  color: #0058b0;
   font-size: 2em;
   margin-bottom: 5px;
+}
+
+.charts-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 100px;
+}
+
+.charts-container h1 {
+  color: #0058b0;
+  font-size: 2em;
+  margin-bottom: 5px;
+  margin-left: 260px;
+}
+
+
+.table-container {
+  max-height: 400px; 
+  overflow-y: auto;
 }
 
 table {
@@ -116,5 +216,6 @@ tr {
 tr:last-child {
   border-bottom: none;
 }
+
+
 </style>
-git

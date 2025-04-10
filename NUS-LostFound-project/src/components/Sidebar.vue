@@ -6,6 +6,7 @@
         <li><router-link to="/lostpage">Lost Item List</router-link></li>
         <li><router-link to="/foundpage">Found Item List</router-link></li>
         <li><router-link to="/notifications">Notifications</router-link></li>
+        <li><router-link to="/mypost">My Posts</router-link></li>
         <li><router-link to="/settings">Settings</router-link></li>
       </ul>
     </div>
@@ -15,7 +16,7 @@
   .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: rgba(0, 85, 255, 0.74);
+    background-color: #0058b0;
     padding-top: 20px;
     position: fixed;
     top: 0;
