@@ -33,7 +33,7 @@
         <p class="description">Description: {{ item.description }}</p>
 
         <!-- Button to trigger notification -->
-        <button @click="sendNotification(item)">Send Notification</button>
+        <button @click="handleSendContact(item)">Send Notification</button>
       </div>
     </div>
   </div>
@@ -89,11 +89,37 @@ export default {
   },
 
   methods: {
-    sendNotification(item) {
-      console.log('Notification sent to', item.userContact);
-      alert(`Notification sent to ${item.userContact} with details about the item.`);
-    },
+    async handleSendContact(item) {
+    const postOwnerId = item.userId;
+    const postDescription = item.description;
+    const currentUserId = this.$store.state.user.uid;
+
+    // You’ll need to implement this function below or import it
+    await this.sendNotification(currentUserId, postOwnerId, postDescription);
   },
+
+  async sendNotification(fromUserId, toUserId, description) {
+    try {
+      // Step 1: Get sender's contact info
+      const userDoc = await this.$firebase.firestore().collection('users').doc(fromUserId).get();
+      const userData = userDoc.data();
+
+      const contactDetails = `Nickname: ${userData.nickname}\nEmail: ${userData.email}\nPhone: ${userData.phoneNumber}\nTelegram: ${userData.telegram}`;
+
+      // Step 2: Send notification to post owner
+      await this.$firebase.firestore().collection('notifications').add({
+        userId: toUserId,
+        message: `${userData.nickname} has shared their contact with you regarding the post: "${description}".\n\nContact Details:\n${contactDetails}`,
+        timestamp: new Date(),
+        seen: false,
+      });
+
+      alert('Contact information sent!');
+    } catch (error) {
+      console.error('Failed to send notification:', error);
+    }
+  }
+}
 };
 </script>
 
@@ -104,7 +130,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 40px; /* Same margin as sidebar */
+  margin-left: 120px; /* Same margin as sidebar */
 }
 
 .title {

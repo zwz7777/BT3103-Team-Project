@@ -104,7 +104,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 40px; /* Same margin as sidebar */
+  margin-left: 120px; /* Same margin as sidebar */
 }
 
 .title {

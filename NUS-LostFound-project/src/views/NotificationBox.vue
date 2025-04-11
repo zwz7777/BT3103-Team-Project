@@ -24,6 +24,8 @@
   
   <script>
   import Sidebar from '@/components/Sidebar.vue';
+  import { db } from '@/firebase.js';
+  import { doc, getDoc, getDocs } from 'firebase/firestore';
 
 export default {
   name: 'NotificationBox',
@@ -34,37 +36,51 @@ export default {
 
     data() {
       return {
-        notifications: [
-          {
-            id: "fakeNotification1",
-            message: "User A has shared their contact information with you: 123-456-789",
-            timestamp: new Date("2025-04-03T10:00:00"),
-            seen: false,
-          },
-          {
-            id: "fakeNotification2",
-            message: "User B has shared their contact information with you: userB@example.com",
-            timestamp: new Date("2025-04-02T14:30:00"),
-            seen: false,
-          },
-        ],
+        notifications: [],
       };
     },
     methods: {
-      // Format timestamp as a readable date
       formatTimestamp(timestamp) {
         const date = new Date(timestamp);
         return date.toLocaleString();
       },
-      // Mark notification as read
       markAsRead(notificationId) {
         const notification = this.notifications.find(
-          (notification) => notification.id === notificationId
-        );
+          (n) => n.id === notificationId
+        )
         if (notification) {
-        notification.seen = !notification.seen;  // Toggle read/unread
+          notification.seen = !notification.seen
         }
       },
+      async fetchNotifications() {
+        const currentUserId = this.$store.state.user.uid
+        const userDocRef = doc(db, 'users', currentUserId)
+
+        try {
+          const userSnap = await getDoc(userDocRef)
+          if (userSnap.exists()) {
+            const notificationIds = userSnap.data().notifications || []
+
+            const notifPromises = notificationIds.map((id) =>
+              getDoc(doc(db, 'notifications', id))
+            )
+
+            const notifSnaps = await Promise.all(notifPromises)
+
+            this.notifications = notifSnaps
+              .filter((snap) => snap.exists())
+              .map((snap) => ({
+                id: snap.id,
+                ...snap.data(),
+              }))
+          }
+        } catch (err) {
+          console.error('Failed to fetch notifications:', err)
+        }
+      },
+    },
+    mounted() {
+      this.fetchNotifications()
     },
   };
   </script>
