@@ -26,7 +26,6 @@
 
       <!-- COLOR -->
       <SelectField label="Color">
-        <!-- You wanted an extra piece of text, e.g. "Choose color" -->
         <select v-model="formData.color" required>
           <option disabled value="">Select a color</option>
           <option v-for="colorOption in colors" :key="colorOption" :value="colorOption">
@@ -101,13 +100,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { db, auth } from '@/firebase'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import SelectField from '@/components/SelectField.vue'
 import TypeField from '@/components/TypeField.vue'
 import Sidebar from '@/components/Sidebar.vue'
 
-// Receive "lost" or "found" from route param
 const props = defineProps({ formType: { type: String, default: 'lost' } })
 
 const categories = ['Identity Document', 'Electronics', 'Clothing', 'Stationery', 'Others']
@@ -120,7 +118,7 @@ const formData = ref({
   faculty: '',
   location: '',
   description: '',
-  urgency: 5 // by default, medium urgency 
+  urgency: 5
 })
 
 const pageTitle = computed(() =>
@@ -143,25 +141,37 @@ onAuthStateChanged(auth, (currentUser) => {
   user.value = currentUser
 })
 
-// Submits to Firestore
+// New: helper to add post ID to user's document
+const updateUserPosts = async (uid, postId) => {
+  try {
+    const userRef = doc(db, 'User', uid)
+    await updateDoc(userRef, {
+      posts: arrayUnion(postId)
+    })
+  } catch (error) {
+    console.error('Error updating user posts:', error)
+  }
+}
+
 const handleSubmit = async () => {
   try {
-    // check whether the user is login
     if (!user.value) {
       alert('Please log in to submit a post.')
       router.push('/')
       return
     }
-    // add userId, timestamp
+
     const entry = {
       ...formData.value,
       userId: user.value.uid,
       timestamp: serverTimestamp()
     }
 
-    await addDoc(collection(db, collectionName.value), entry)
+    const docRef = await addDoc(collection(db, collectionName.value), entry)
 
-    // Clear the form after submission
+    // New: save post ID under the user's document
+    await updateUserPosts(user.value.uid, docRef.id)
+
     formData.value = {
       category: '',
       color: '',
@@ -169,7 +179,7 @@ const handleSubmit = async () => {
       location: '',
       description: ''
     }
-    // Navigate to the item list page if submitted successfully
+
     router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
   } catch (error) {
     console.error('Error submitting form:', error)
@@ -181,7 +191,6 @@ const handleSubmit = async () => {
       location: '',
       description: ''
     }
-    // test router
     router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
   }
 }
@@ -191,7 +200,7 @@ const handleSubmit = async () => {
 .found-lost-form {
   padding-top: 0.3rem;
   width: 100%;
-  margin-left: 260px; /* Same margin as sidebar*/
+  margin-left: 260px;
 }
 
 h2 {
@@ -300,5 +309,4 @@ h2 {
   font-size: 0.85rem;
   color: #666;
 }
-
 </style>
