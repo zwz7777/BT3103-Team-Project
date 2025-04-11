@@ -14,8 +14,6 @@
             :class="{ seen: notification.seen }"
           >
             <div class="message">{{ notification.message }}</div>
-            <div class="timestamp">{{ formatTimestamp(notification.timestamp) }}</div>
-            <button @click="markAsRead(notification.id)">Mark as read</button>
           </div>
         </div>
       </div>
@@ -24,8 +22,10 @@
   
   <script>
   import Sidebar from '@/components/Sidebar.vue';
-  import { db } from '@/firebase.js';
-  import { doc, getDoc, getDocs } from 'firebase/firestore';
+import { db } from '@/firebase.js';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 export default {
   name: 'NotificationBox',
@@ -37,52 +37,63 @@ export default {
     data() {
       return {
         notifications: [],
+        currentUserId: null,
       };
     },
     methods: {
-      formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleString();
-      },
-      markAsRead(notificationId) {
-        const notification = this.notifications.find(
-          (n) => n.id === notificationId
-        )
-        if (notification) {
-          notification.seen = !notification.seen
-        }
-      },
       async fetchNotifications() {
-        const currentUserId = this.$store.state.user.uid
-        const userDocRef = doc(db, 'users', currentUserId)
+        console.log('Fetching notifications for user:', this.currentUserId);
+      if (!this.currentUserId) {
+        console.log('User is not logged in.');
+        return; // Return early if the user is not authenticated
+      }
 
-        try {
-          const userSnap = await getDoc(userDocRef)
-          if (userSnap.exists()) {
-            const notificationIds = userSnap.data().notifications || []
+      try {
+        const notificationsRef = collection(db, 'notifications');
+        const q = query(notificationsRef, where('posterUid', '==', this.currentUserId));
+        console.log('Querying notifications with posterUid:', this.currentUserId);
 
-            const notifPromises = notificationIds.map((id) =>
-              getDoc(doc(db, 'notifications', id))
-            )
-
-            const notifSnaps = await Promise.all(notifPromises)
-
-            this.notifications = notifSnaps
-              .filter((snap) => snap.exists())
-              .map((snap) => ({
-                id: snap.id,
-                ...snap.data(),
-              }))
-          }
-        } catch (err) {
-          console.error('Failed to fetch notifications:', err)
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          console.log('No notifications found for this user.');
+        } else {
+          console.log(`Found ${querySnapshot.size} notifications.`);
         }
-      },
+
+        const notifications = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log('Fetched notifications:', notifications);
+
+        this.notifications = notifications;
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
     },
-    mounted() {
-      this.fetchNotifications()
+
+    // Initialize Firebase Auth state listener
+    listenForAuthState() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          console.log('User signed in:', user.uid);
+          this.currentUserId = user.uid; // Store the currentUserId
+          this.fetchNotifications(); // Now fetch notifications
+        } else {
+          // No user is signed in
+          console.log('No user is signed in');
+        }
+      });
     },
-  };
+  },
+
+  mounted() {
+    console.log('Mounted NotificationBox component.');
+    this.listenForAuthState(); // Listen for authentication state changes
+  },
+};
   </script>
   
   <style scoped>

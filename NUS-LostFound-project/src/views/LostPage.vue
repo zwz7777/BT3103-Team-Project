@@ -42,8 +42,10 @@
 <script>
 import Sidebar from '@/components/Sidebar.vue';
 
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, getDocs, query, where, arrayUnion } from 'firebase/firestore';
 import { db } from '@/firebase.js';
+import { onSnapshot } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 
 export default {
@@ -72,7 +74,7 @@ export default {
     filteredItems() {
       return this.lostItems.filter(item => {
         const matchesColor = this.selectedColor ? item.color === this.selectedColor : true;
-        const matchesFaculty = this.selectedFaculty ? item.Faculty === this.selectedFaculty : true;
+        const matchesFaculty = this.selectedFaculty ? item.faculty === this.selectedFaculty : true;
         return matchesColor && matchesFaculty;
       });
     },
@@ -89,34 +91,61 @@ export default {
   },
 
   methods: {
-    async handleSendContact(item) {
-    const postOwnerId = item.userId;
-    const postDescription = item.description;
-    const currentUserId = this.$store.state.user.uid;
-
-    // You’ll need to implement this function below or import it
-    await this.sendNotification(currentUserId, postOwnerId, postDescription);
+  async handleSendContact(item) {
+    this.selectedItem = item; // store item temporarily if needed
+    await this.sendNotification();
   },
-
-  async sendNotification(fromUserId, toUserId, description) {
+  async sendNotification() {
     try {
-      // Step 1: Get sender's contact info
-      const userDoc = await this.$firebase.firestore().collection('users').doc(fromUserId).get();
-      const userData = userDoc.data();
+      // Step 1: Get the requester document (by matching uid field)
+      const item = this.selectedItem; // from handleSendContact
+      const posterUid = item.userId;
+      const postDescription = item.description;
+      const auth = getAuth();
+      const requesterUid = auth.currentUser?.uid;
+      //const requesterUid = this.$store.state.User.uid;
+      const usersRef = collection(db, 'User');
+      const q = query(usersRef, where('uid', '==', requesterUid));
+      const querySnapshot = await getDocs(q);
 
-      const contactDetails = `Nickname: ${userData.nickname}\nEmail: ${userData.email}\nPhone: ${userData.phoneNumber}\nTelegram: ${userData.telegram}`;
+      if (querySnapshot.empty) {
+        console.error('Requester not found');
+        return;
+      }
 
-      // Step 2: Send notification to post owner
-      await this.$firebase.firestore().collection('notifications').add({
-        userId: toUserId,
-        message: `${userData.nickname} has shared their contact with you regarding the post: "${description}".\n\nContact Details:\n${contactDetails}`,
-        timestamp: new Date(),
-        seen: false,
+      const requesterDoc = querySnapshot.docs[0];
+      const requesterData = requesterDoc.data();
+
+      // Step 2: Construct message with requester's Telegram
+      const message = `${requesterData.nickname || 'Someone'} is interested in your lost item: "${postDescription}".\nTelegram: ${requesterData.telegram || 'N/A'}`;
+
+      // Step 3: Create notification document
+      const notifRef = await addDoc(collection(db, 'notifications'), {
+        posterUid,
+        requesterUid,
+        message,
       });
 
-      alert('Contact information sent!');
+      // Step 4: Add notification ID to the poster's user document
+      const posterQuery = query(usersRef, where('uid', '==', posterUid));
+      const posterSnapshot = await getDocs(posterQuery);
+
+      if (posterSnapshot.empty) {
+        console.error('Poster not found');
+        return;
+      }
+
+      const posterDocId = posterSnapshot.docs[0].id;
+      const posterRef = doc(db, 'User', posterDocId);
+
+      await updateDoc(posterRef, {
+        notifications: arrayUnion(notifRef.id)
+      });
+
+      alert('Notification sent to the post owner!');
     } catch (error) {
-      console.error('Failed to send notification:', error);
+      console.error('Error sending notification:', error.message, error.stack);
+      alert('Failed to send notification.');
     }
   }
 }
