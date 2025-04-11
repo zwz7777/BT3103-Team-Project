@@ -33,7 +33,7 @@
         <p class="description">Description: {{ item.description }}</p>
 
         <!-- Button to trigger notification -->
-        <button @click="sendNotification(item)">Send Notification</button>
+        <button @click="handleSendContact(item)">Send Notification</button>
       </div>
     </div>
   </div>
@@ -42,8 +42,10 @@
 <script>
 
 import Sidebar from '@/components/Sidebar.vue';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, getDocs, query, where, arrayUnion } from 'firebase/firestore';
 import { db } from '@/firebase.js';
+import { onSnapshot } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 export default {
   name: 'FoundPage',
@@ -88,12 +90,66 @@ export default {
       }));
     });
   },
+
   methods: {
-    sendNotification(item) {
-      console.log('Notification sent to', item.userContact);
-      alert(`Notification sent to ${item.userContact} with details about the item.`);
-    },
+    async handleSendContact(item) {
+    this.selectedItem = item; // store item temporarily if needed
+    await this.sendNotification();
   },
+  async sendNotification() {
+    try {
+      // Step 1: Get the requester document (by matching uid field)
+      const item = this.selectedItem; // from handleSendContact
+      const posterUid = item.userId;
+      const postDescription = item.description;
+      const auth = getAuth();
+      const requesterUid = auth.currentUser?.uid;
+      //const requesterUid = this.$store.state.User.uid;
+      const usersRef = collection(db, 'User');
+      const q = query(usersRef, where('uid', '==', requesterUid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.error('Requester not found');
+        return;
+      }
+
+      const requesterDoc = querySnapshot.docs[0];
+      const requesterData = requesterDoc.data();
+
+      // Step 2: Construct message with requester's Telegram
+      const message = `${requesterData.nickname || 'Someone'} is interested in your found item: "${postDescription}".\nTelegram: ${requesterData.telegram || 'N/A'}`;
+
+      // Step 3: Create notification document
+      const notifRef = await addDoc(collection(db, 'notifications'), {
+        posterUid,
+        requesterUid,
+        message,
+      });
+
+      // Step 4: Add notification ID to the poster's user document
+      const posterQuery = query(usersRef, where('uid', '==', posterUid));
+      const posterSnapshot = await getDocs(posterQuery);
+
+      if (posterSnapshot.empty) {
+        console.error('Poster not found');
+        return;
+      }
+
+      const posterDocId = posterSnapshot.docs[0].id;
+      const posterRef = doc(db, 'User', posterDocId);
+
+      await updateDoc(posterRef, {
+        notifications: arrayUnion(notifRef.id)
+      });
+
+      alert('Notification sent to the post owner!');
+    } catch (error) {
+      console.error('Error sending notification:', error.message, error.stack);
+      alert('Failed to send notification.');
+    }
+  }
+}
 };
 </script>
 
@@ -104,7 +160,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 40px; /* Same margin as sidebar */
+  margin-left: 120px; /* Same margin as sidebar */
 }
 
 .title {
