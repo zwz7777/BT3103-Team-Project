@@ -5,17 +5,20 @@
         <input v-model="email" type="email" placeholder="Email" required />
         <input v-model="password" type="password" placeholder="Password" required />
         <button type="submit">Login</button>
+        <button type="button" @click="handleSignUp">Sign Up</button>
+        <p>
+            <span @click="handleForgotPassword" style="color: blue; cursor: pointer; text-decoration: underline;">
+                Forgot Password?
+            </span>
+        </p>
       </form>
       <hr />
       <button @click="loginWithGoogle">Login with Google</button>
-      <span @click="handleSignUp" style="color: blue; cursor: pointer; text-decoration: underline;">
-        Don't have an account? Sign up here
-      </span>
     </div>
   </template>
   <script>
   import { auth } from '@/firebase.js';  // Or wherever you've stored it
-  import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+  import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
   import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
   import { db } from '@/firebase.js';
   
@@ -36,6 +39,20 @@
             } catch (error) {
             console.error('Error with sign-up:', error);
             }
+        },
+        async handleForgotPassword() {
+        if (!this.email) {
+            alert('Please enter your email address first.');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, this.email);
+            alert('Password reset email sent! Please check your inbox.');
+        } catch (error) {
+            console.error('Error sending password reset email:', error);
+            alert('Error: ' + error.message);
+        }
         },
       async handleEmailPasswordLogin() {
         try {
