@@ -20,8 +20,8 @@
         <br /><br />
 
         <div class="save">
-          <button type="button" @click="saveProfile">Save</button>
           <button type="button" @click="close">Cancel</button>
+          <button type="button" @click="saveProfile">Save</button>
         </div>
         
       </form>
