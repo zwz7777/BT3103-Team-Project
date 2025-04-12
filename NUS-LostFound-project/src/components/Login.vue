@@ -23,8 +23,10 @@
             ui = new firebaseui.auth.AuthUI(firebase.auth());
         }
         var uiConfig = {
+            signInFlow: 'popup',
             signInOptions: [
                 firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             ],
             callbacks: {
               signInSuccessWithAuthResult: async (authResult) => {
