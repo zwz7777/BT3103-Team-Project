@@ -6,14 +6,14 @@
       <div class="first-line">
         <h2>{{ pageTitle }}</h2>
         <div class="form-switch-bar">
-            <div class="form-toggle-wrapper">
+          <div class="form-toggle-wrapper">
             <button @click="switchFormType">
               {{ props.formType === 'lost' ? 'Report Found' : 'Report Lost' }}
             </button>
-            </div>
+          </div>
         </div>
       </div>
-      
+
       <!-- CATEGORY -->
       <SelectField label="Category">
         <select v-model="formData.category" required>
@@ -46,44 +46,42 @@
 
       <!-- LOCATION -->
       <TypeField label="Location">
-        <textarea
-          v-model="formData.location"
-          placeholder="Where you found/lost it"
-          type="text"
-          rows="3"
-          required
-        ></textarea>
+        <textarea v-model="formData.location" placeholder="Where you found/lost it (optional)" type="text" rows="3"
+          required></textarea>
       </TypeField>
 
       <!-- DESCRIPTION -->
       <TypeField label="Description">
-        <textarea
-          v-model="formData.description"
-          placeholder="More details (N/A if not applicable)"
-          type="text"
-          rows="3"
-          required
-        ></textarea>
+        <textarea v-model="formData.description" placeholder="More details (optional)" type="text" rows="3"
+          required></textarea>
       </TypeField>
 
       <!-- URGENCY -->
       <TypeField label="Urgency">
         <div class="urgency-slider-wrapper">
-          <input
-            type="range"
-            v-model="formData.urgency"
-            min="1"
-            max="10"
-            step="1"
-            :style="sliderStyle"
-            class="urgency-slider"
-          />
+          <input type="range" v-model="formData.urgency" min="1" max="10" step="1" class="urgency-slider" />
           <div class="urgency-scale-labels">
             <span v-for="n in 10" :key="n">{{ n }}</span>
           </div>
           <div class="urgency-scale-labels">
             <span>Least Urgent</span>
             <span> Most Urgent</span>
+          </div>
+        </div>
+      </TypeField>
+
+      <!-- UPLOAD IMAGE -->
+      <TypeField label="Upload Images (optional)">
+        <input type="file" multiple accept="image/*" @change="handleFileChange" ref="fileInput" />
+        <div class="image-preview" v-if="selectedFiles.length">
+          <div v-for="(file, index) in selectedFiles" :key="index" class="preview-item">
+            <img :src="getPreviewUrl(file)" alt="Preview" />
+          </div>
+        </div>
+        <div v-if="uploadProgress.length" class="progress-wrapper">
+          <div v-for="(progress, index) in uploadProgress" :key="index" class="progress-bar">
+            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+            <span>{{ progress }}%</span>
           </div>
         </div>
       </TypeField>
@@ -99,8 +97,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { db, auth } from '@/firebase'
-import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore'
+import { db, auth, storage } from '@/firebase'
+import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore'
+import { getDownloadURL, ref as storageRef, uploadBytes, getStorage, uploadBytesResumable } from 'firebase/storage'
 import { onAuthStateChanged } from 'firebase/auth'
 import SelectField from '@/components/SelectField.vue'
 import TypeField from '@/components/TypeField.vue'
@@ -141,6 +140,59 @@ onAuthStateChanged(auth, (currentUser) => {
   user.value = currentUser
 })
 
+// UPLOAD IMAGE
+// Multiple file support
+const selectedFiles = ref([])
+
+const handleFileChange = (e) => {
+  const files = Array.from(e.target.files)
+  if (files.length > 3) {
+    alert('Please upload a maximum of 3 images.')
+    selectedFiles.value = files.slice(0, 3)
+  } else {
+    selectedFiles.value = files
+  }
+}
+
+const getPreviewUrl = (file) => {
+  return URL.createObjectURL(file)
+}
+
+// Upload multiple images: return an array of URLs
+const uploadImages = async (files, postId) => {
+  const urls = []
+  uploadProgress.value = [] // reset progress
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    const fileRef = storageRef(storage, `uploads/${postId}_${i}_${file.name}`)
+    const uploadTask = uploadBytesResumable(fileRef, file)
+
+    uploadProgress.value[i] = 0
+
+    await new Promise((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          uploadProgress.value[i] = Math.round(progress)
+        },
+        (error) => reject(error),
+        async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref)
+          urls.push(url)
+          resolve()
+        }
+      )
+    })
+  }
+
+  return urls
+}
+
+// upload process
+const uploadProgress = ref([])
+
 // New: helper to add post ID to user's document
 const updateUserPosts = async (uid, postId) => {
   try {
@@ -161,10 +213,19 @@ const handleSubmit = async () => {
       return
     }
 
+    const postId = `item_${Date.now()}`
+    let imageUrls = []
+
+    if (selectedFiles.value.length) {
+      imageUrls = await uploadImages(selectedFiles.value, postId)
+    }
+
+
     const entry = {
       ...formData.value,
       userId: user.value.uid,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
+      imageUrls
     }
 
     const docRef = await addDoc(collection(db, collectionName.value), entry)
@@ -177,21 +238,25 @@ const handleSubmit = async () => {
       color: '',
       faculty: '',
       location: '',
-      description: ''
+      description: '',
+      urgency: 5
     }
 
     router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
   } catch (error) {
     console.error('Error submitting form:', error)
     alert("Error in submitting entries")
+    /*
     formData.value = {
       category: '',
       color: '',
       faculty: '',
       location: '',
-      description: ''
+      description: '',
+      urgency: 5
     }
     router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
+    */
   }
 }
 </script>
@@ -252,13 +317,14 @@ h2 {
 }
 
 .form-toggle-wrapper button:hover {
-  background-color: #f07e13; 
+  background-color: #f07e13;
   color: white;
 }
 
 .urgency-slider-wrapper {
   background: white
 }
+
 .urgency-label {
   display: flex;
   justify-content: space-between;
@@ -266,6 +332,7 @@ h2 {
   margin-top: 0.25rem;
   color: #666;
 }
+
 .urgency-slider {
   -webkit-appearance: none;
   width: 100%;
@@ -276,6 +343,7 @@ h2 {
   transition: background 0.3s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
+
 .urgency-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -287,6 +355,7 @@ h2 {
   transition: border 0.3s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
+
 .urgency-slider::-webkit-slider-thumb:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
