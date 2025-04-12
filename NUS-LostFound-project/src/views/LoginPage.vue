@@ -1,11 +1,11 @@
 <template>
     <div>
-      <h1>Welcome to the Login Page</h1>
+      <!-- <h1>Welcome to the Login Page</h1> -->
       <Login />
     </div>
   </template>
 <script>
-  import Login from '@/components/Login.vue';
+  import Login from '@/components/LoginCustomui.vue';
 
   export default {
     name:"LoginPage", 
