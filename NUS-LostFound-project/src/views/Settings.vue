@@ -22,7 +22,22 @@
             Phone Number: {{ phoneNumber }} <br><br>
             Telegram: {{ telegram }} <br><br>
         </p>
-        <div class="editForm">
+
+        <div class="save">
+            <button @click="showEditModal = true">Edit Profile</button>
+        </div>
+
+        <EditProfileModal
+            v-if="showEditModal"
+            :uid="uid"
+            :initialEmail="email"
+            :initialNickname="nickname"
+            :initialPhoneNumber="phoneNumber"
+            :initialTelegram="telegram"
+            @close="showEditModal = false"
+            @profile-updated="handleProfileUpdated"
+        />
+        <!-- <div class="editForm">
             <h2>Edit Profile</h2>
             <form id="userForm">
                 <label for="email">Email Address: </label>
@@ -46,12 +61,12 @@
                     <button id="savebutton" type="button" v-on:click="editProfile"> Save </button>
                 </div>
             </form>
-        </div>
+        </div> -->
     </div>
 
     <div class="container"> 
         <h2>Change Password</h2>
-        <ChangePassWord />
+        <ChangePassWordModal />
 
         <h2>Log Out</h2>
         <Logout />
@@ -81,7 +96,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import Logout from '@/components/Logout.vue';
 import Sidebar from "@/components/Sidebar.vue";
-import ChangePassWord from "@/components/ChangePassWord.vue";
+import ChangePassWordModal from "@/components/ChangePassWord.vue";
+import EditProfileModal from "@/components/EditProfile.vue";
 const db = getFirestore(firebaseApp)
 
 export default {
@@ -91,13 +107,15 @@ export default {
             email: "",
             nickname: "",
             phoneNumber: "",
-            telegram: ""
+            telegram: "",
+            showEditModal: false
         };
     },
     components: {
         Logout,
         Sidebar,
-        ChangePassWord
+        ChangePassWordModal,
+        EditProfileModal
     },
     methods: {
         /*
@@ -127,38 +145,42 @@ export default {
                 console.log("No such document!");
             }
         },
-        async editProfile() {
-            console.log("IN AC");
-            console.log("Current UID:", this.uid);
+        handleProfileUpdated() {
+            this.fetchData();
+            this.showEditModal = false;
+        },
+        // async editProfile() {
+        //     console.log("IN AC");
+        //     console.log("Current UID:", this.uid);
 
-            const emailInput = document.getElementById("email").value;
-            const nicknameInput = document.getElementById("nickname").value;
-            const phoneNumberInput = document.getElementById("phoneNumber").value;
-            const telegramInput = document.getElementById("telegram").value;
+        //     const emailInput = document.getElementById("email").value;
+        //     const nicknameInput = document.getElementById("nickname").value;
+        //     const phoneNumberInput = document.getElementById("phoneNumber").value;
+        //     const telegramInput = document.getElementById("telegram").value;
 
-            const updatedData = {};
+        //     const updatedData = {};
 
-            if (emailInput && emailInput !== this.email) updatedData.email = emailInput;
-            if (nicknameInput && nicknameInput !== this.nickname) updatedData.nickname = nicknameInput;
-            if (phoneNumberInput && phoneNumberInput !== this.phoneNumber) updatedData.phoneNumber = phoneNumberInput;
-            if (telegramInput && telegramInput !== this.telegram) updatedData.telegram = telegramInput;
+        //     if (emailInput && emailInput !== this.email) updatedData.email = emailInput;
+        //     if (nicknameInput && nicknameInput !== this.nickname) updatedData.nickname = nicknameInput;
+        //     if (phoneNumberInput && phoneNumberInput !== this.phoneNumber) updatedData.phoneNumber = phoneNumberInput;
+        //     if (telegramInput && telegramInput !== this.telegram) updatedData.telegram = telegramInput;
 
-            if (Object.keys(updatedData).length === 0) {
-                alert("No changes detected.");
-                return;
-            }
+        //     if (Object.keys(updatedData).length === 0) {
+        //         alert("No changes detected.");
+        //         return;
+        //     }
 
-            alert("Updating your data: " + this.uid);
+        //     alert("Updating your data: " + this.uid);
 
-            try {
-                await setDoc(doc(db, "User", this.uid), updatedData, { merge: true });
-                console.log("Document updated for account:", this.uid);
-                await this.fetchData();
-                document.getElementById('userForm').reset();
-            } catch (error) {
-                console.error("Error updating document: ", error);
-            }
-        }
+        //     try {
+        //         await setDoc(doc(db, "User", this.uid), updatedData, { merge: true });
+        //         console.log("Document updated for account:", this.uid);
+        //         await this.fetchData();
+        //         document.getElementById('userForm').reset();
+        //     } catch (error) {
+        //         console.error("Error updating document: ", error);
+        //     }
+        // }
     },
     mounted() {
         const auth = getAuth();
