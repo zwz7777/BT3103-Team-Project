@@ -48,6 +48,12 @@ const routes = [
         component: Found
     },
     {
+        path: '/item/:type/:id',
+        name: 'ItemPost',
+        component: () => import('@/views/ItemPost.vue'),
+        props: true
+    },
+    {
         path: '/notifications',
         name: 'Notifications',
         component: NotificationBox
