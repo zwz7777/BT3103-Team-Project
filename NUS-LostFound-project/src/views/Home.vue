@@ -4,12 +4,26 @@
   <div>
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
-      <p>* Only urgent items are displayed here</p>
-      <p>* Both lost and found items are included</p>
+      <p>Welcome to the NUS Lost & Found website!</p>
+      <p>
+        Follow the sidebar on the left to report items and browse the lists of
+        lost&found items.
+      </p>
+      <p>
+        Steps to send notifications: <br />
+        1. Fill in your profile in the settings page, nickname and telehandle
+        are needed to contact others. <br />
+        2. Go to the lists of lost&found items and click the send notification
+        button. <br />
+        3. A system generated notification will be sent to the person who posted
+        the item.
+      </p>
     </div>
 
     <div class="highlighted-items">
       <h2>Highlighted Items</h2>
+      <p>* Only urgent items are displayed here</p>
+      <p>* Both lost and to be claimed items are included</p>
       <br />
 
       <div class="table-container">
@@ -25,7 +39,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in highlightedItems" :key="index" class="border-b">
+            <tr
+              v-for="(item, index) in highlightedItems"
+              :key="index"
+              class="border-b"
+            >
               <td>{{ item.time }}</td>
               <td>{{ item.description }}</td>
               <td>{{ item.location }}</td>
@@ -40,8 +58,7 @@
       </div>
       <br />
       <br />
-      <h2>Charts of All Lost & Found Items</h2>
-
+      <h2>Charts of All Items (Lost & To Be Claimed)</h2>
     </div>
 
     <div class="charts-container">
@@ -50,20 +67,21 @@
       <br />
       <br />
 
-      <h2>Category Distribution</h2>
-      <pie-chart :data="categoryData.length ? categoryData : [['No Data', 1]]" />
-    </div>
 
+      <h2>Category Distribution</h2>
+      <pie-chart
+        :data="categoryData.length ? categoryData : [['No Data', 1]]"
+      />
+    </div>
   </div>
 </template>
-
 
 <script>
 import Sidebar from "@/components/Sidebar.vue";
 import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import VueChartkick from 'vue-chartkick';
-import 'chartkick/chart.js';
+import VueChartkick from "vue-chartkick";
+import "chartkick/chart.js";
 import CheckDetailsButton from '@/components/CheckDetails.vue'
 
 export default {
@@ -109,7 +127,10 @@ export default {
 
           // Count Faculty and Category for Pie Charts
           facultyMap.set(data.faculty, (facultyMap.get(data.faculty) || 0) + 1);
-          categoryMap.set(data.category, (categoryMap.get(data.category) || 0) + 1);
+          categoryMap.set(
+            data.category,
+            (categoryMap.get(data.category) || 0) + 1
+          );
 
           // If urgent, add to highlightedItems
           if (urgency >= 6) {
@@ -120,7 +141,8 @@ export default {
               description: data.category + ": " + data.description || "N/A",
               location: data.location || "N/A",
               faculty: data.faculty || "N/A",
-              status: collectionName === "foundItems" ? "Found" : "Lost",
+              status:
+                collectionName === "foundItems" ? "To Be Claimed" : "Lost",
               urgency: urgency,
             });
           }
@@ -140,15 +162,16 @@ export default {
 
       // Prepare the data for Pie charts (all items)
       this.facultyData = Array.from(facultyMap, ([name, data]) => [name, data]);
-      this.categoryData = Array.from(categoryMap, ([name, data]) => [name, data]);
-
+      this.categoryData = Array.from(categoryMap, ([name, data]) => [
+        name,
+        data,
+      ]);
     } catch (error) {
       console.error("Error fetching items:", error);
     }
-  }
+  },
 };
 </script>
-
 
 <style scoped>
 .home-container {
@@ -176,6 +199,11 @@ export default {
   padding: 20px;
 }
 
+.highlighted-items p {
+  font-size: 1.2em;
+  color: #727680;
+}
+
 .highlighted-items h2 {
   color: #0058b0;
   font-size: 2em;
@@ -196,7 +224,6 @@ export default {
   margin-bottom: 5px;
   margin-left: 260px;
 }
-
 
 .table-container {
   max-height: 400px;
