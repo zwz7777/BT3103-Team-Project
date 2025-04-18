@@ -46,6 +46,7 @@ import { collection, addDoc, doc, updateDoc, getDocs, query, where, arrayUnion }
 import { db } from '@/firebase.js';
 import { onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { serverTimestamp } from 'firebase/firestore';
 
 
 export default {
@@ -124,6 +125,7 @@ export default {
         posterUid,
         requesterUid,
         message,
+        timestamp: serverTimestamp(), // ✅ Add timestamp here
       });
 
       // Step 4: Add notification ID to the poster's user document
