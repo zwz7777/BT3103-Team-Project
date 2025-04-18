@@ -46,14 +46,13 @@
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
+import { sendNotification } from '@/services/notificationService';
 
-import { collection, addDoc, doc, updateDoc, getDocs, query, where, arrayUnion } from 'firebase/firestore';
+import { collection} from 'firebase/firestore';
 import { db } from '@/firebase.js';
 import CheckDetailsButton from '@/components/CheckDetails.vue';
 import { sendNotification } from '@/services/notificationService';
 import { onSnapshot } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { serverTimestamp } from 'firebase/firestore';
 
 
 export default {
