@@ -175,4 +175,3 @@ button:hover {
   background-color: #d1ffd1;
 }
 </style>
-<!-- //for one post, in 10 mins, the user can only click the send notification 3 times, after that, a prompt will show that "you have hit the notification limit, try 10mins later -->
