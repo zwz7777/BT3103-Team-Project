@@ -66,8 +66,6 @@
       <pie-chart :data="facultyData.length ? facultyData : [['No Data', 1]]" />
       <br />
       <br />
-
-
       <h2>Category Distribution</h2>
       <pie-chart
         :data="categoryData.length ? categoryData : [['No Data', 1]]"

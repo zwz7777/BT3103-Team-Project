@@ -57,7 +57,8 @@ const routes = [
     path: '/item/:type/:id',
     name: 'ItemPost',
     component: () => import('@/views/ItemPost.vue'),
-    props: true
+    props: true,
+    meta: { requiresAuth: true },
   },
   {
     path: "/notifications",
