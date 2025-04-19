@@ -25,15 +25,20 @@
           <span v-if="item.color" class="keyword">Color: {{ item.color }}</span>
           <span v-if="item.faculty" class="keyword">Faculty: {{ item.faculty }}</span>
         </div>
-
-        <!-- Second Line: Location -->
+        <!-- 2) Location -->
         <p class="location">Location: {{ item.location }}</p>
 
-        <!-- Third Line: Description -->
+        <!-- 3) Description -->
         <p class="description">Description: {{ item.description }}</p>
+        
+        <div class="buttonWrapper">
+          <!-- Check Details -->
+          <CheckDetailsButton :itemType="'lost'" :itemId="item.id" />
 
-        <!-- Button to trigger notification -->
-        <button @click="handleSendContact(item)">Send Notification</button>
+          <!-- Button to trigger notification -->
+          <button @click="handleSendContact(item)">Send Notification</button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -45,6 +50,7 @@ import { sendNotification } from '@/services/notificationService';
 
 import { collection} from 'firebase/firestore';
 import { db } from '@/firebase.js';
+import CheckDetailsButton from '@/components/CheckDetails.vue';
 import { onSnapshot } from 'firebase/firestore';
 
 
@@ -53,6 +59,7 @@ export default {
 
   components: {
     Sidebar,
+    CheckDetailsButton
   },
   data() {
     return {
@@ -108,7 +115,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 120px; /* Same margin as sidebar */
+  margin-left: 120px;
+  /* Same margin as sidebar */
 }
 
 .title {
@@ -161,7 +169,7 @@ export default {
 }
 
 .keyword {
-  background:#458dda;
+  background: #458dda;
   color: white;
   padding: 4px 8px;
   border-radius: 8px;
@@ -176,6 +184,10 @@ export default {
   color: black;
 }
 
+.buttonWrapper {
+  display: flex;
+  justify-content: space-between;
+}
 button {
   cursor: pointer;
 }

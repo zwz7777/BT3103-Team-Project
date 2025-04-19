@@ -35,6 +35,7 @@
               <th>Location</th>
               <th>Faculty</th>
               <th>Status</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -48,6 +49,9 @@
               <td>{{ item.location }}</td>
               <td>{{ item.faculty }}</td>
               <td>{{ item.status }}</td>
+              <td>
+                <CheckDetailsButton :itemType="item.type" :itemId="item.docId" />
+              </td>
             </tr>
           </tbody>
         </table>
@@ -62,7 +66,6 @@
       <pie-chart :data="facultyData.length ? facultyData : [['No Data', 1]]" />
       <br />
       <br />
-
       <h2>Category Distribution</h2>
       <pie-chart
         :data="categoryData.length ? categoryData : [['No Data', 1]]"
@@ -77,12 +80,14 @@ import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
+import CheckDetailsButton from '@/components/CheckDetails.vue'
 
 export default {
   name: "Home",
 
   components: {
     Sidebar,
+    CheckDetailsButton
   },
 
   data() {
@@ -109,6 +114,8 @@ export default {
 
           // Store all items for charts
           items.push({
+            docId: doc.id,
+            type: collectionName === 'foundItems' ? 'found' : 'lost',
             time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
             description: data.category + ": " + data.description || "N/A",
             location: data.location || "N/A",
@@ -126,6 +133,8 @@ export default {
           // If urgent, add to highlightedItems
           if (urgency >= 6) {
             highlightedItems.push({
+              docId: doc.id,
+              type: collectionName === 'foundItems' ? 'found' : 'lost',
               time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
               description: data.category + ": " + data.description || "N/A",
               location: data.location || "N/A",
@@ -168,7 +177,8 @@ export default {
   flex-direction: column;
   min-height: 20vh;
   padding: 20px;
-  margin-left: 260px; /* Same margin as sidebar*/
+  margin-left: 260px;
+  /* Same margin as sidebar*/
 }
 
 .home-container h1 {

@@ -54,6 +54,13 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/item/:type/:id',
+    name: 'ItemPost',
+    component: () => import('@/views/ItemPost.vue'),
+    props: true,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/notifications",
     name: "Notifications",
     component: NotificationBox,
