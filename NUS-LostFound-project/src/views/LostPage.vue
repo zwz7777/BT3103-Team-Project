@@ -51,7 +51,6 @@ import { sendNotification } from '@/services/notificationService';
 import { collection} from 'firebase/firestore';
 import { db } from '@/firebase.js';
 import CheckDetailsButton from '@/components/CheckDetails.vue';
-import { sendNotification } from '@/services/notificationService';
 import { onSnapshot } from 'firebase/firestore';
 
 
