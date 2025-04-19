@@ -2,6 +2,7 @@
   <div class="login-container">
     <h1 class="login-title">Log in to your account</h1>
     <div class="login-box">
+      <div v-if="statusMessage" :class="statusType + '-message'">{{ statusMessage }}</div>
       <form @submit.prevent="handleEmailPasswordLogin">
         <input v-model="email" type="email" placeholder="Email" required />
         <input
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import { auth } from "@/firebase.js"; // Or wherever you've stored it
+import { auth } from "@/firebase.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -42,10 +43,33 @@ export default {
     return {
       email: "",
       password: "",
+      statusMessage: "",
+      statusType: "",
     };
   },
   methods: {
+    getErrorMessage(error) {
+      switch (error.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+          return "Invalid email or password.";
+        case "auth/email-already-in-use":
+          return "This email is already registered.";
+        case "auth/weak-password":
+          return "Password is too weak. Please choose a stronger password.";
+        case "auth/invalid-email":
+          return "Invalid email address.";
+        case "auth/popup-closed-by-user":
+          return "Google sign-in was cancelled.";
+        case "auth/network-request-failed":
+          return "Network error. Please check your internet connection.";
+        default:
+          return "An error occurred. Please try again.";
+      }
+    },
     async handleSignUp() {
+      this.statusMessage = "";
+      this.statusType = "";
       try {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
@@ -53,36 +77,44 @@ export default {
           this.password
         );
         const user = userCredential.user;
-        // Then handle Firestore data, route changes, etc.
+        await setDoc(doc(db, "User", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          createdAt: serverTimestamp(),
+        });
+        this.$router.push("/home");
       } catch (error) {
-        console.error("Error with sign-up:", error);
+        this.statusMessage = this.getErrorMessage(error);
+        this.statusType = "error";
       }
     },
     async handleForgotPassword() {
+      this.statusMessage = "";
+      this.statusType = "";
       if (!this.email) {
-        alert("Please enter your email address first.");
+        this.statusMessage = "Please enter your email address first.";
+        this.statusType = "error";
         return;
       }
-
       try {
         await sendPasswordResetEmail(auth, this.email);
-        alert("Password reset email sent! Please check your inbox.");
+        this.statusMessage = "Password reset email sent! Please check your inbox.";
+        this.statusType = "success";
       } catch (error) {
-        console.error("Error sending password reset email:", error);
-        alert("Error: " + error.message);
+        this.statusMessage = this.getErrorMessage(error);
+        this.statusType = "error";
       }
     },
     async handleEmailPasswordLogin() {
+      this.statusMessage = "";
+      this.statusType = "";
       try {
-        // Sign in the user
         const userCredential = await signInWithEmailAndPassword(
           auth,
           this.email,
           this.password
         );
         const user = userCredential.user;
-
-        // Check if user doc exists in Firestore
         const userRef = doc(db, "User", user.uid);
         const docSnap = await getDoc(userRef);
         if (!docSnap.exists()) {
@@ -92,24 +124,19 @@ export default {
             createdAt: serverTimestamp(),
           });
         }
-
-        // Navigate to home after sign-in
         this.$router.push("/home");
       } catch (error) {
-        console.error("Error with email/password sign-in:", error);
+        this.statusMessage = this.getErrorMessage(error);
+        this.statusType = "error";
       }
     },
-
     async loginWithGoogle() {
+      this.statusMessage = "";
+      this.statusType = "";
       try {
-        // Create a Google provider object
         const provider = new GoogleAuthProvider();
-
-        // Sign in with Popup
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-
-        // Check if user doc exists in Firestore
         const userRef = doc(db, "User", user.uid);
         const docSnap = await getDoc(userRef);
         if (!docSnap.exists()) {
@@ -119,17 +146,25 @@ export default {
             createdAt: serverTimestamp(),
           });
         }
-
-        // Navigate to home after sign-in
         this.$router.push("/home");
       } catch (error) {
-        console.error("Error with Google sign-in:", error);
+        this.statusMessage = this.getErrorMessage(error);
+        this.statusType = "error";
       }
     },
   },
 };
 </script>
 <style scoped>
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 10px;
+}
 .login-container {
   display: flex;
   flex-direction: column;
