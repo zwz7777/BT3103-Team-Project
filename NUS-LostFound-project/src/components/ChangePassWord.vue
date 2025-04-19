@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Settings Page Button -->
-    <button id="button" type="button" @click="openModal">Click Here</button>
+    <button id="button" type="button" @click="openModal">Change Password</button>
 
     <!-- Modal -->
     <div v-if="showModal" class="modal-overlay">
