@@ -48,11 +48,9 @@
 import Sidebar from '@/components/Sidebar.vue';
 import { sendNotification } from '@/services/notificationService';
 
-import { collection} from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase.js';
 import CheckDetailsButton from '@/components/CheckDetails.vue';
-import { onSnapshot } from 'firebase/firestore';
-
 
 export default {
   name: 'LostPage',
@@ -92,19 +90,25 @@ export default {
   mounted() {
     const lostItemsRef = collection(db, 'lostItems');
     onSnapshot(lostItemsRef, (snapshot) => {
-      this.lostItems = snapshot.docs.map(doc => ({
+      const items = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      // Sort by urgency in descending order (highest urgency first)
+      this.lostItems = items.sort((a, b) => {
+        const aUrgency = a.urgency ?? 0;
+        const bUrgency = b.urgency ?? 0;
+        return bUrgency - aUrgency; // Higher urgency comes first
+      });
     });
   },
 
   methods: {
-  async handleSendContact(item) {
-    this.selectedItem = item;
-    await sendNotification(item, this.selectedItem);
-  },
-}
+    async handleSendContact(item) {
+      this.selectedItem = item;
+      await sendNotification(item, this.selectedItem);
+    },
+  }
 };
 </script>
 
