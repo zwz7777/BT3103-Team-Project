@@ -45,13 +45,11 @@
 </template>
 
 <script>
-
 import Sidebar from '@/components/Sidebar.vue';
-import CheckDetailsButton from '@/components/CheckDetails.vue'
+import CheckDetailsButton from '@/components/CheckDetails.vue';
 import { sendNotification } from '@/services/notificationService';
-import { collection, addDoc, doc, updateDoc, getDocs, query, where, arrayUnion } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '@/firebase.js';
-import { onSnapshot } from 'firebase/firestore';
 
 export default {
   name: 'FoundPage',
@@ -89,9 +87,8 @@ export default {
     },
   },
 
-
   mounted() {
-    const foundItemsRef = collection(db, 'foundItems');
+    const foundItemsRef = query(collection(db, 'foundItems'), orderBy('urgency', 'desc'));
     onSnapshot(foundItemsRef, (snapshot) => {
       this.foundItems = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -102,13 +99,12 @@ export default {
 
   methods: {
     async handleSendContact(item) {
-    this.selectedItem = item;
-    await sendNotification(item, this.selectedItem);
-  },
-}
+      this.selectedItem = item;
+      await sendNotification(item, this.selectedItem);
+    },
+  }
 };
 </script>
-  
 
 <style scoped>
 .container {

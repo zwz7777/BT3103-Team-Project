@@ -7,8 +7,12 @@
       You haven't submitted any posts yet.
     </div>
     <div v-else>
-      <div v-for="item in posts" :key="item.id" class="post-card">
-        <!-- First Line: Category, Color, Faculty -->
+      <!-- Lost Items Section -->
+      <h3>My Lost Items:</h3>
+      <div v-if="lostItems.length === 0">
+        No lost items submitted.
+      </div>
+      <div v-for="item in lostItems" :key="item.id" class="post-card">
         <div class="keywords">
           <span v-if="item.category" class="keyword"
             >Category: {{ item.category }}</span
@@ -18,14 +22,28 @@
             >Faculty: {{ item.faculty }}</span
           >
         </div>
-
-        <!-- Second Line: Location -->
         <p class="location">Location: {{ item.location }}</p>
-
-        <!-- Third Line: Description -->
         <p class="description">Description: {{ item.description }}</p>
+        <button class="delete-button" @click="deletePost(item)">Delete</button>
+      </div>
 
-        <!-- Delete Button -->
+      <!-- Found Items Section -->
+      <h3>Items Found By Me:</h3>
+      <div v-if="foundItems.length === 0">
+        No found items submitted.
+      </div>
+      <div v-for="item in foundItems" :key="item.id" class="post-card">
+        <div class="keywords">
+          <span v-if="item.category" class="keyword"
+            >Category: {{ item.category }}</span
+          >
+          <span v-if="item.color" class="keyword">Color: {{ item.color }}</span>
+          <span v-if="item.faculty" class="keyword"
+            >Faculty: {{ item.faculty }}</span
+          >
+        </div>
+        <p class="location">Location: {{ item.location }}</p>
+        <p class="description">Description: {{ item.description }}</p>
         <button class="delete-button" @click="deletePost(item)">Delete</button>
       </div>
     </div>
@@ -33,7 +51,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { auth, db } from "@/firebase";
 import {
   doc,
@@ -76,7 +94,8 @@ export default {
               type: foundSnap.docs.some((d) => d.id === doc.id)
                 ? "Found"
                 : "Lost",
-            }));
+            }))
+            .sort((a, b) => (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0));
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -86,13 +105,14 @@ export default {
     };
 
     const deletePost = async (item) => {
+      const confirmed = window.confirm("Are you sure you want to delete this post?");
+      if (!confirmed) return;
+
       try {
-        // Delete from the correct collection
         const collectionName =
           item.type === "Found" ? "foundItems" : "lostItems";
         await deleteDoc(doc(db, collectionName, item.id));
 
-        // Update the user's post list
         const userRef = doc(db, "User", userId.value);
         const userSnap = await getDoc(userRef);
         const userData = userSnap.data();
@@ -101,12 +121,18 @@ export default {
         );
         await updateDoc(userRef, { posts: updatedPosts });
 
-        // Remove from local list
         posts.value = posts.value.filter((post) => post.id !== item.id);
       } catch (error) {
         console.error("Error deleting post:", error);
       }
     };
+
+    const lostItems = computed(() =>
+      posts.value.filter((item) => item.type === "Lost")
+    );
+    const foundItems = computed(() =>
+      posts.value.filter((item) => item.type === "Found")
+    );
 
     onMounted(() => {
       onAuthStateChanged(auth, (currentUser) => {
@@ -123,6 +149,8 @@ export default {
       posts,
       loading,
       deletePost,
+      lostItems,
+      foundItems,
     };
   },
 };
