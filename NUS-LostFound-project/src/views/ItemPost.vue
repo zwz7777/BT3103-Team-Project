@@ -12,10 +12,18 @@
       <p><strong>Time Reported:</strong> {{ formatDate(item.timestamp) }}</p>
 
       <!-- optional image -->
-      <div class="images-section" v-if="item.imageUrls && item.imageUrls.length">
+      <div
+        class="images-section"
+        v-if="item.imageUrls && item.imageUrls.length"
+      >
         <h3>Images:</h3>
         <div class="images-grid">
-          <div v-for="(url, idx) in item.imageUrls" :key="idx" class="image-thumbnail" @click="openModal(url)">
+          <div
+            v-for="(url, idx) in item.imageUrls"
+            :key="idx"
+            class="image-thumbnail"
+            @click="openModal(url)"
+          >
             <img :src="url" alt="Preview" />
           </div>
         </div>
@@ -35,52 +43,52 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { db } from '@/firebase'
-import { doc, getDoc } from 'firebase/firestore'
-import Sidebar from '@/components/Sidebar.vue'
+import { ref, onMounted } from "vue";
+import { db } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import Sidebar from "@/components/Sidebar.vue";
 
 // use params for router: { type: 'lost' | 'found', id: docId }
 const props = defineProps({
   type: String,
-  id: String
-})
+  id: String,
+});
 
-const item = ref(null)
+const item = ref(null);
 
-const isModalOpen = ref(false)
-const modalImage = ref('')
+const isModalOpen = ref(false);
+const modalImage = ref("");
 
 function openModal(url) {
-  modalImage.value = url
-  isModalOpen.value = true
+  modalImage.value = url;
+  isModalOpen.value = true;
 }
 
 function closeModal() {
-  isModalOpen.value = false
-  modalImage.value = ''
+  isModalOpen.value = false;
+  modalImage.value = "";
 }
 
 onMounted(async () => {
   try {
-    const collectionName = props.type === 'lost' ? 'lostItems' : 'foundItems'
-    const docRef = doc(db, collectionName, props.id)
-    const docSnap = await getDoc(docRef)
+    const collectionName = props.type === "lost" ? "lostItems" : "foundItems";
+    const docRef = doc(db, collectionName, props.id);
+    const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      item.value = docSnap.data()
+      item.value = docSnap.data();
     } else {
-      console.error('Item not found in Firestore')
+      console.error("Item not found in Firestore");
     }
   } catch (error) {
-    console.error('Error fetching item:', error)
+    console.error("Error fetching item:", error);
   }
-})
+});
 
 function formatDate(timestamp) {
-  if (!timestamp) return 'N/A'
-  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
-  return date.toLocaleString()
+  if (!timestamp) return "N/A";
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  return date.toLocaleString();
 }
 </script>
 
@@ -101,7 +109,46 @@ function formatDate(timestamp) {
 }
 
 .images-grid img {
-  max-width: 150px;
-  border-radius: 4px;
+  width: 500px;
+  height: auto;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.images-grid img:hover {
+  transform: scale(1.05);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  width: calc(100vw - 260px);
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  object-fit: contain;
+  border-radius: 0 !important;
+}
+
+.modal-content img {
+  border-radius: 0 !important;
 }
 </style>
