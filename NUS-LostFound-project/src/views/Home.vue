@@ -4,16 +4,15 @@
   <div>
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
-      <p>Welcome to the NUS Lost & Found website!</p>
+      <p1>Welcome to the NUS Lost & Found website!</p1>
       <p>
-        Follow the sidebar on the left to report items and browse the lists of
-        lost&found items.
+        Follow the sidebar on the left to report items and browse item lists.
       </p>
       <p>
         Steps to send notifications: <br />
-        1. Fill in your profile in the settings page, nickname and telehandle
-        are needed to contact others. <br />
-        2. Go to the lists of lost&found items and click the send notification
+        1. Fill in your profile information in settings page, nickname and
+        telegram handle are needed to contact others. <br />
+        2. Go to the lists of lost & found items and click the send notification
         button. <br />
         3. A system generated notification will be sent to the person who posted
         the item.
@@ -50,7 +49,10 @@
               <td>{{ item.faculty }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <CheckDetailsButton :itemType="item.type" :itemId="item.docId" />
+                <CheckDetailsButton
+                  :itemType="item.type"
+                  :itemId="item.docId"
+                />
               </td>
             </tr>
           </tbody>
@@ -80,14 +82,14 @@ import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
-import CheckDetailsButton from '@/components/CheckDetails.vue'
+import CheckDetailsButton from "@/components/CheckDetails.vue";
 
 export default {
   name: "Home",
 
   components: {
     Sidebar,
-    CheckDetailsButton
+    CheckDetailsButton,
   },
 
   data() {
@@ -115,7 +117,7 @@ export default {
           // Store all items for charts
           items.push({
             docId: doc.id,
-            type: collectionName === 'foundItems' ? 'found' : 'lost',
+            type: collectionName === "foundItems" ? "found" : "lost",
             time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
             description: data.category + ": " + data.description || "N/A",
             location: data.location || "N/A",
@@ -134,7 +136,7 @@ export default {
           if (urgency >= 6) {
             highlightedItems.push({
               docId: doc.id,
-              type: collectionName === 'foundItems' ? 'found' : 'lost',
+              type: collectionName === "foundItems" ? "found" : "lost",
               time: data.timestamp?.toDate()?.toLocaleString() || "N/A",
               description: data.category + ": " + data.description || "N/A",
               location: data.location || "N/A",
@@ -184,12 +186,17 @@ export default {
 .home-container h1 {
   color: #0058b0;
   font-size: 3em;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.home-container p1 {
+  font-size: 1.2em;
+  color: #696666;
 }
 
 .home-container p {
   font-size: 1.2em;
-  color: #727680;
+  color: #696666;
 }
 
 .highlighted-items {
@@ -199,7 +206,7 @@ export default {
 
 .highlighted-items p {
   font-size: 1.2em;
-  color: #727680;
+  color: #696666;
 }
 
 .highlighted-items h2 {
@@ -238,6 +245,13 @@ table {
 
 thead {
   background-color: #e5e7eb;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #e5e7eb;
+  z-index: 2;
 }
 
 th,

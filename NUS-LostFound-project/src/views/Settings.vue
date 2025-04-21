@@ -39,12 +39,10 @@
     <!-- Settings Options -->
     <div class="account-settings">
       <div class="settings-box">
-        <h2>Change Password</h2>
         <ChangePassWordModal />
       </div>
 
       <div class="settings-box">
-        <h2>Log Out</h2>
         <Logout />
       </div>
     </div>
@@ -135,29 +133,20 @@
 }
 
 .profile-info {
-  background-color: #bddbf8;
+  background-color: #ebf1f9;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 400px;
-}
-
-.settings-header,
-.account-settings {
-  max-width: 600px;
   text-align: center;
   width: 400px;
 }
 
 .settings-box {
-  background-color: #bddbf8;
-  padding: 2rem;
+  background-color: #fff;
+  padding: 1rem;
   margin: 2rem;
-  border-radius: 10px;
   max-width: 600px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .edit-button {
