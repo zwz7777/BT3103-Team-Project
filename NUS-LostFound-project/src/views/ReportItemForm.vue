@@ -110,7 +110,7 @@ const props = defineProps({ formType: { type: String, default: 'lost' } })
 
 const categories = ['Identity Document', 'Electronics', 'Clothing', 'Stationery', 'Others']
 const colors = ['Black', 'White', 'Red', 'Blue', 'Green', 'Yellow', 'Others']
-const faculties = ['SoC', 'CDE', 'FoS', 'FASS', 'Biz', 'Law']
+const faculties = ['SoC', 'CDE', 'FoS', 'FASS', 'Biz', 'Law', 'Utown', 'UCC', 'CLB']
 
 const formData = ref({
   category: '',
@@ -252,17 +252,6 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error('Error submitting form:', error)
     alert("Error in submitting entries")
-    /*
-    formData.value = {
-      category: '',
-      color: '',
-      faculty: '',
-      location: '',
-      description: '',
-      urgency: 5
-    }
-    router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
-    */
   }
 }
 </script>
