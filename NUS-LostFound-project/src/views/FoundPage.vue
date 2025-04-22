@@ -36,7 +36,10 @@
           <CheckDetailsButton :itemType="'found'" :itemId="item.id" class="button"/>
 
           <!-- Button to trigger notification -->
-          <button @click="handleSendContact(item)">Send Notification</button>
+          <button v-if="user && user.uid !== item.userId"
+            @click="handleSendNotification(item)">
+            Send Notification
+          </button>
         </div>
 
       </div>
@@ -48,8 +51,16 @@
 import Sidebar from '@/components/Sidebar.vue';
 import CheckDetailsButton from '@/components/CheckDetails.vue';
 import { sendNotification } from '@/services/notificationService';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+  where
+} from 'firebase/firestore';
 import { db } from '@/firebase.js';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export default {
   name: 'FoundPage',
@@ -61,22 +72,21 @@ export default {
 
   data() {
     return {
+      user: null,
+      contactInfoComplete: false,
       selectedColor: '',
       selectedFaculty: '',
       foundItems: [],
-      notificationCooldown: null,
-      countdownInterval: null
+      failedUrls: []
     };
   },
 
   computed: {
     uniqueColors() {
-      const colors = new Set(this.foundItems.map(item => item.color).filter(Boolean));
-      return Array.from(colors);
+      return [...new Set(this.foundItems.map(item => item.color).filter(Boolean))];
     },
     uniqueFaculties() {
-      const faculties = new Set(this.foundItems.map(item => item.faculty).filter(Boolean));
-      return Array.from(faculties);
+      return [...new Set(this.foundItems.map(item => item.faculty).filter(Boolean))];
     },
     filteredItems() {
       return this.foundItems.filter(item => {
@@ -84,10 +94,11 @@ export default {
         const matchesFaculty = this.selectedFaculty ? item.faculty === this.selectedFaculty : true;
         return matchesColor && matchesFaculty;
       });
-    },
+    }
   },
 
   mounted() {
+    // 🔄 Real-time fetch for found items
     const foundItemsRef = query(collection(db, 'foundItems'), orderBy('urgency', 'desc'));
     onSnapshot(foundItemsRef, (snapshot) => {
       this.foundItems = snapshot.docs.map(doc => ({
@@ -95,16 +106,70 @@ export default {
         ...doc.data()
       }));
     });
+
+    // 🔐 Auth + contact info check
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        this.user = currentUser;
+
+        const userSnap = await getDocs(
+          query(collection(db, 'User'), where('uid', '==', currentUser.uid))
+        );
+
+        if (!userSnap.empty) {
+          const userData = userSnap.docs[0].data();
+          this.contactInfoComplete = Boolean(userData.telegram || userData.phoneNumber);
+        }
+      }
+    });
+
+    // 🔁 Auto-retry failed images when back online
+    window.addEventListener('online', this.retryFailedImages);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('online', this.retryFailedImages);
   },
 
   methods: {
-    async handleSendContact(item) {
-      this.selectedItem = item;
-      await sendNotification(item, this.selectedItem);
+    async handleSendNotification(item) {
+      try {
+        if (!item) return;
+
+        if (!this.contactInfoComplete) {
+          alert('Please update your contact info before sending a notification.');
+          this.$router.push('/settings');
+          return;
+        }
+
+        await sendNotification(item);
+        alert('Notification sent to the post owner!');
+      } catch (error) {
+        console.error('Failed to send notification:', error);
+        alert('Failed to send notification. Please try again later.');
+      }
     },
+
+    handleImageError(url) {
+      if (!this.failedUrls.includes(url)) {
+        this.failedUrls.push(url);
+      }
+    },
+
+    retryFailedImages() {
+      this.failedUrls.forEach((url) => {
+        const img = new Image();
+        img.onload = () => {
+          this.failedUrls = this.failedUrls.filter((u) => u !== url);
+        };
+        img.src = url;
+      });
+    }
   }
 };
 </script>
+
 
 <style scoped>
 .container {

@@ -110,7 +110,7 @@ const props = defineProps({ formType: { type: String, default: 'lost' } })
 
 const categories = ['Identity Document', 'Electronics', 'Clothing', 'Stationery', 'Others']
 const colors = ['Black', 'White', 'Red', 'Blue', 'Green', 'Yellow', 'Others']
-const faculties = ['SoC', 'CDE', 'FoS', 'FASS', 'Biz', 'Law']
+const faculties = ['SoC', 'CDE', 'FoS', 'FASS', 'Biz', 'Law', 'Utown', 'UCC', 'CLB']
 
 const formData = ref({
   category: '',
@@ -144,11 +144,24 @@ onAuthStateChanged(auth, (currentUser) => {
 // UPLOAD IMAGE
 // Multiple file support
 const selectedFiles = ref([])
+const MAX_SIZE_MB = 4;
 
 const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
 const handleFileChange = (e) => {
   const files = Array.from(e.target.files)
   const validFiles = []
+  const tooLarge = files.filter(file => file.size > MAX_SIZE_MB * 1024 * 1024);
+
+  if (tooLarge.length > 0) {
+    const names = tooLarge.map(f => f.name).join(', ');
+    alert(`The following image(s) exceed 4MB:\n${names}\nPlease select smaller files.`);
+    // remove oversized images
+    selectedFiles.value = files.filter(file => file.size <= MAX_SIZE_MB * 1024 * 1024);
+  } else {
+    selectedFiles.value = files;
+  }
+
+  // check correct format
   files.forEach(file => {
     if (!supportedTypes.includes(file.type)) {
       alert(`${file.name} is not a supported format. Please upload JPG, PNG, or WEBP.`)
@@ -199,7 +212,7 @@ const uploadImages = async (files, postId) => {
 // upload process
 const uploadProgress = ref([])
 
-// New: helper to add post ID to user's document
+// add post ID to user's document
 const updateUserPosts = async (uid, postId) => {
   try {
     const userRef = doc(db, 'User', uid)
@@ -252,17 +265,6 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error('Error submitting form:', error)
     alert("Error in submitting entries")
-    /*
-    formData.value = {
-      category: '',
-      color: '',
-      faculty: '',
-      location: '',
-      description: '',
-      urgency: 5
-    }
-    router.push(props.formType === 'lost' ? '/lostpage' : '/foundpage')
-    */
   }
 }
 </script>

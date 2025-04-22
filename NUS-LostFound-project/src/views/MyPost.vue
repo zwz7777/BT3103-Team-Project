@@ -24,7 +24,11 @@
         </div>
         <p class="location">Location: {{ item.location }}</p>
         <p class="description">Description: {{ item.description }}</p>
-        <button class="delete-button" @click="deletePost(item)">Delete</button>
+        <div class="buttons">
+          <button class="delete-button" @click="deletePost(item)">Delete</button>
+          <CheckDetailsButton :itemType="item.type.toLowerCase()" :itemId="item.id" class="check-button"/>
+        </div>
+        
       </div>
 
       <!-- Found Items Section -->
@@ -44,7 +48,10 @@
         </div>
         <p class="location">Location: {{ item.location }}</p>
         <p class="description">Description: {{ item.description }}</p>
-        <button class="delete-button" @click="deletePost(item)">Delete</button>
+        <div class="buttons">
+          <button class="delete-button" @click="deletePost(item)">Delete</button>
+          <CheckDetailsButton :itemType="item.type.toLowerCase()" :itemId="item.id" class="check-button"/>
+        </div>
       </div>
     </div>
   </div>
@@ -63,11 +70,13 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "@/components/Sidebar.vue";
+import CheckDetailsButton from '@/components/CheckDetails.vue';
 
 export default {
   name: "MyPost",
   components: {
     Sidebar,
+    CheckDetailsButton
   },
   setup() {
     const posts = ref([]);
@@ -203,7 +212,28 @@ export default {
   cursor: pointer;
 }
 
+.check-button {
+  margin-top: 10px;
+  background-color: #0058b0;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .delete-button:hover {
   background-color: #c0392b;
+}
+
+.check-button:hover {
+  background-color: #f07e13;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 12rem;
+  height: 3rem;
 }
 </style>

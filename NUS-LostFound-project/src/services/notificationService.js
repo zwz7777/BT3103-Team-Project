@@ -1,18 +1,27 @@
-import { collection, addDoc, updateDoc, query, where, getDocs, doc, arrayUnion } from 'firebase/firestore';
-import { db } from '@/firebase.js';
-import { getAuth } from 'firebase/auth';
-import { serverTimestamp } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  arrayUnion,
+} from "firebase/firestore";
+import { db } from "@/firebase.js";
+import { getAuth } from "firebase/auth";
+import { serverTimestamp } from "firebase/firestore";
 
-export const sendNotification = async (item, selectedItem) => {
+export const sendNotification = async (item) => {
   try {
-    const postId = selectedItem.id;
-    const posterUid = selectedItem.userId;
-    const postDescription = selectedItem.description;
+    const postId = item.id;
+    const posterUid = item.userId;
+    const postDescription = item.description;
     const auth = getAuth();
     const requesterUid = auth.currentUser?.uid;
 
     if (!requesterUid) {
-      alert('You must be logged in to send notifications.');
+      alert("You must be logged in to send notifications.");
       return;
     }
 
@@ -21,10 +30,18 @@ export const sendNotification = async (item, selectedItem) => {
     const storedAttempts = JSON.parse(localStorage.getItem(storageKey)) || [];
 
     console.log(`[Rate Limit] Storage key: ${storageKey}`);
-    console.log(`[Rate Limit] All stored attempts:`, storedAttempts.map(ts => new Date(ts).toLocaleString()));
-    const validAttempts = storedAttempts.filter(timestamp => now - timestamp < 600000);
+    console.log(
+      `[Rate Limit] All stored attempts:`,
+      storedAttempts.map((ts) => new Date(ts).toLocaleString())
+    );
+    const validAttempts = storedAttempts.filter(
+      (timestamp) => now - timestamp < 600000
+    );
 
-    console.log(`[Rate Limit] Valid attempts in last 10 minutes:`, validAttempts.map(ts => new Date(ts).toLocaleString()));
+    console.log(
+      `[Rate Limit] Valid attempts in last 10 minutes:`,
+      validAttempts.map((ts) => new Date(ts).toLocaleString())
+    );
     if (validAttempts.length >= 3) {
       const earliestAttemptTime = validAttempts[0];
       const now = new Date();
@@ -43,7 +60,9 @@ export const sendNotification = async (item, selectedItem) => {
       }
 
       const mins = Math.ceil(notificationCooldown / 60);
-      alert(`You have hit the notification limit. Try again in ${mins} minute(s).`);
+      alert(
+        `You have hit the notification limit. Try again in ${mins} minute(s).`
+      );
       console.log(`[Rate Limit] Blocked. Try again in ${mins} minute(s).`);
       return;
     }
@@ -51,45 +70,49 @@ export const sendNotification = async (item, selectedItem) => {
     validAttempts.push(now);
     localStorage.setItem(storageKey, JSON.stringify(validAttempts));
 
-    const usersRef = collection(db, 'User');
-    const q = query(usersRef, where('uid', '==', requesterUid));
+    const usersRef = collection(db, "User");
+    const q = query(usersRef, where("uid", "==", requesterUid));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      console.error('Requester not found');
+      console.error("Requester not found");
       return;
     }
 
     const requesterDoc = querySnapshot.docs[0];
     const requesterData = requesterDoc.data();
 
-    const message = `${requesterData.nickname || 'Someone'} is interested in your lost item: "${postDescription}".\nTelegram: ${requesterData.telegram || 'N/A'}`;
+    const message = `${
+      requesterData.nickname || "Someone"
+    } is interested in your lost item: "${postDescription}".\nTelegram: ${
+      requesterData.telegram || "N/A"
+    }`;
 
-    const notifRef = await addDoc(collection(db, 'notifications'), {
+    const notifRef = await addDoc(collection(db, "notifications"), {
       posterUid,
       requesterUid,
       message,
       timestamp: serverTimestamp(),
     });
 
-    const posterQuery = query(usersRef, where('uid', '==', posterUid));
+    const posterQuery = query(usersRef, where("uid", "==", posterUid));
     const posterSnapshot = await getDocs(posterQuery);
 
     if (posterSnapshot.empty) {
-      console.error('Poster not found');
+      console.error("Poster not found");
       return;
     }
 
     const posterDocId = posterSnapshot.docs[0].id;
-    const posterRef = doc(db, 'User', posterDocId);
+    const posterRef = doc(db, "User", posterDocId);
 
     await updateDoc(posterRef, {
-      notifications: arrayUnion(notifRef.id)
+      notifications: arrayUnion(notifRef.id),
     });
 
-    alert('Notification sent to the post owner!');
+    // alert("Notification sent to the post owner!");
   } catch (error) {
-    console.error('Error sending notification:', error.message, error.stack);
-    alert('Failed to send notification.');
+    console.error("Error sending notification:", error.message, error.stack);
+    alert("Failed to send notification.");
   }
 };
