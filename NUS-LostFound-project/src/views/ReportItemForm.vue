@@ -144,11 +144,24 @@ onAuthStateChanged(auth, (currentUser) => {
 // UPLOAD IMAGE
 // Multiple file support
 const selectedFiles = ref([])
+const MAX_SIZE_MB = 4;
 
 const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
 const handleFileChange = (e) => {
   const files = Array.from(e.target.files)
   const validFiles = []
+  const tooLarge = files.filter(file => file.size > MAX_SIZE_MB * 1024 * 1024);
+
+  if (tooLarge.length > 0) {
+    const names = tooLarge.map(f => f.name).join(', ');
+    alert(`The following image(s) exceed 4MB:\n${names}\nPlease select smaller files.`);
+    // remove oversized images
+    selectedFiles.value = files.filter(file => file.size <= MAX_SIZE_MB * 1024 * 1024);
+  } else {
+    selectedFiles.value = files;
+  }
+
+  // check correct format
   files.forEach(file => {
     if (!supportedTypes.includes(file.type)) {
       alert(`${file.name} is not a supported format. Please upload JPG, PNG, or WEBP.`)
@@ -199,7 +212,7 @@ const uploadImages = async (files, postId) => {
 // upload process
 const uploadProgress = ref([])
 
-// New: helper to add post ID to user's document
+// add post ID to user's document
 const updateUserPosts = async (uid, postId) => {
   try {
     const userRef = doc(db, 'User', uid)

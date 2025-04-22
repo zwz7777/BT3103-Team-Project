@@ -2,12 +2,12 @@
   <div class="item-post-page">
     <Sidebar />
 
-    <h1>Item Details</h1>
-
     <!-- return button -->
     <button @click="goBack" class="return-button">
       ← Return
     </button>
+    <h1>Item Details</h1>
+
 
     <div v-if="item">
       <p><strong>Category:</strong> {{ item.category }}</p>
@@ -188,6 +188,7 @@ onBeforeUnmount(() => {
 .item-post-page {
   max-width: 600px;
   margin: 1rem auto;
+  padding-left: 5%;
 }
 
 .images-section {
