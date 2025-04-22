@@ -12,20 +12,17 @@
       <p><strong>Time Reported:</strong> {{ formatDate(item.timestamp) }}</p>
 
       <!-- optional image -->
-      <div
-        class="images-section"
-        v-if="item.imageUrls && item.imageUrls.length"
-      >
+      <div class="images-section" v-if="item.imageUrls && item.imageUrls.length">
         <h3>Images:</h3>
         <div class="images-grid">
-          <div
-            v-for="(url, idx) in item.imageUrls"
-            :key="idx"
-            class="image-thumbnail"
-            @click="openModal(url)"
-          >
-            <img :src="url" alt="Preview" />
+          <div v-for="(url, idx) in item.imageUrls" :key="idx" class="image-thumbnail" @click="openModal(url)">
+            <img v-if="!failedUrls.includes(url)" :src="url" alt="Preview" @error="handleImageError(url)" />
+            <div v-else class="image-placeholder">
+              <p>Preview unavailable.</p>
+              <p> Auto-retrying...</p>
+            </div>
           </div>
+
         </div>
         <!-- Modal for larger image -->
         <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
@@ -43,21 +40,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Sidebar from "@/components/Sidebar.vue";
 
-// use params for router: { type: 'lost' | 'found', id: docId }
 const props = defineProps({
   type: String,
   id: String,
 });
 
 const item = ref(null);
-
 const isModalOpen = ref(false);
 const modalImage = ref("");
+const failedUrls = ref([]);
 
 function openModal(url) {
   modalImage.value = url;
@@ -65,31 +61,49 @@ function openModal(url) {
 }
 
 function closeModal() {
-  isModalOpen.value = false;
   modalImage.value = "";
+  isModalOpen.value = false;
 }
-
-onMounted(async () => {
-  try {
-    const collectionName = props.type === "lost" ? "lostItems" : "foundItems";
-    const docRef = doc(db, collectionName, props.id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      item.value = docSnap.data();
-    } else {
-      console.error("Item not found in Firestore");
-    }
-  } catch (error) {
-    console.error("Error fetching item:", error);
-  }
-});
 
 function formatDate(timestamp) {
   if (!timestamp) return "N/A";
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
   return date.toLocaleString();
 }
+
+function handleImageError(url) {
+  if (!failedUrls.value.includes(url)) {
+    failedUrls.value.push(url);
+  }
+}
+
+function retryFailedImages() {
+  failedUrls.value.forEach((url) => {
+    const img = new Image();
+    img.onload = () => {
+      failedUrls.value = failedUrls.value.filter((u) => u !== url);
+    };
+    img.src = url;
+  });
+}
+
+onMounted(async () => {
+  const collectionName = props.type === "lost" ? "lostItems" : "foundItems";
+  const docRef = doc(db, collectionName, props.id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    item.value = docSnap.data();
+  } else {
+    console.error("Item not found in Firestore");
+  }
+
+  window.addEventListener("online", retryFailedImages);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("online", retryFailedImages);
+});
 </script>
 
 <style scoped>

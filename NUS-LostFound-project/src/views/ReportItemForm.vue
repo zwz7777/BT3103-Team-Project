@@ -72,7 +72,8 @@
 
       <!-- UPLOAD IMAGE -->
       <TypeField label="Upload Images (optional)">
-        <input type="file" multiple accept="image/*" @change="handleFileChange" ref="fileInput" />
+        <input type="file" multiple accept="image/jpeg,image/png,image/webp" @change="handleFileChange"
+          ref="fileInput" />
         <div class="image-preview" v-if="selectedFiles.length">
           <div v-for="(file, index) in selectedFiles" :key="index" class="preview-item">
             <img :src="getPreviewUrl(file)" alt="Preview" />
@@ -144,14 +145,19 @@ onAuthStateChanged(auth, (currentUser) => {
 // Multiple file support
 const selectedFiles = ref([])
 
+const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
 const handleFileChange = (e) => {
   const files = Array.from(e.target.files)
-  if (files.length > 3) {
-    alert('Please upload a maximum of 3 images.')
-    selectedFiles.value = files.slice(0, 3)
-  } else {
-    selectedFiles.value = files
-  }
+  const validFiles = []
+  files.forEach(file => {
+    if (!supportedTypes.includes(file.type)) {
+      alert(`${file.name} is not a supported format. Please upload JPG, PNG, or WEBP.`)
+    } else {
+      validFiles.push(file)
+    }
+  })
+
+  selectedFiles.value = validFiles.slice(0, 3)
 }
 
 const getPreviewUrl = (file) => {

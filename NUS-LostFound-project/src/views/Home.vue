@@ -4,7 +4,7 @@
   <div>
     <div class="home-container">
       <h1>NUS Lost & Found</h1>
-      <p1>Welcome to the NUS Lost & Found website!</p1>
+      <p>Welcome to the NUS Lost & Found website!</p>
       <p>
         Follow the sidebar on the left to report items and browse item lists.
       </p>
