@@ -40,7 +40,9 @@
         </div>
       </div>
       <!-- Button to trigger notification -->
-      <button v-if="user && user.uid !== item.userId" @click="handleSendNotification" class="send-button">
+      <button v-if="user && user.uid !== item.userId" 
+        @click="handleSendNotification" 
+        class="send-button">
         Send Notification
       </button>
     </div>
@@ -120,8 +122,8 @@ const handleSendNotification = async () => {
     await sendNotification(item.value)
     alert('Notification sent to the post owner!')
   } catch (error) {
-    console.error('Failed to send notification:', error)
-    alert('Failed to send notification. Please try again later.')
+    console.error('Failed to send notification - item post alert:', error)
+    // alert('Failed to send notification. Please try again later.')
   }
 }
 
