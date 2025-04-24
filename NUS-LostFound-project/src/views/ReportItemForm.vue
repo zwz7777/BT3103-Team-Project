@@ -8,7 +8,7 @@
         <div class="form-switch-bar">
           <div class="form-toggle-wrapper">
             <button @click="switchFormType">
-              {{ props.formType === 'lost' ? 'Report Found' : 'Report Lost' }}
+              {{ props.formType === 'lost' ? 'Report Lost' : 'Report Found' }}
             </button>
           </div>
         </div>
@@ -122,7 +122,7 @@ const formData = ref({
 })
 
 const pageTitle = computed(() =>
-  props.formType === 'lost' ? 'Found An Item' : 'Lost An Item'
+  props.formType === 'lost' ? 'Lost An Item' : 'Found An Item'
 )
 
 const collectionName = computed(() =>
