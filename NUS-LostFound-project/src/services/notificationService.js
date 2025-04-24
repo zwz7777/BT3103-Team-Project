@@ -14,6 +14,14 @@ import { serverTimestamp } from "firebase/firestore";
 
 export const sendNotification = async (item) => {
   try {
+
+    const userConfirmed = confirm(
+      "By clicking this button, you agree that your contact (Telegram handle) will be shared with the post owner."
+    );
+    if (!userConfirmed) {
+      return;
+    }
+
     const postId = item.id;
     const posterUid = item.userId;
     const postDescription = item.description;
@@ -110,7 +118,7 @@ export const sendNotification = async (item) => {
       notifications: arrayUnion(notifRef.id),
     });
 
-    // alert("Notification sent to the post owner!");
+    alert("Notification sent to the post owner!");
   } catch (error) {
     console.error("Error sending notification:", error.message, error.stack);
     alert("Failed to send notification.");

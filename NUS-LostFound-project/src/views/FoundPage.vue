@@ -144,7 +144,7 @@ export default {
         }
 
         await sendNotification(item);
-        alert('Notification sent to the post owner!');
+        //alert('Notification sent to the post owner!');
       } catch (error) {
         console.error('Failed to send notification:', error);
         alert('Failed to send notification. Please try again later.');
