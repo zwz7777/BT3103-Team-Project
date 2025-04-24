@@ -4,10 +4,10 @@
       <h2>Report Items</h2>
       <div class="choose-btns">
         <!-- Button for Found Lost Items -->
-        <button @click="goFound">Found lost items</button>
+        <button @click="goFound">I Lost My Item</button>
   
         <!-- Button for Look for Lost Items -->
-        <button @click="goLost">Look for lost items</button>
+        <button @click="goLost">I Found An Item</button>
       </div>
     </div>
   </template>
