@@ -8,7 +8,7 @@
         <div class="form-switch-bar">
           <div class="form-toggle-wrapper">
             <button @click="switchFormType">
-              {{ props.formType === 'lost' ? 'Report Lost' : 'Report Found' }}
+              {{ props.formType === 'lost' ? 'Report Found Instead' : 'Report Lost Instead' }}
             </button>
           </div>
         </div>
