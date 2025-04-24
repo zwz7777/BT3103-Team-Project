@@ -122,7 +122,7 @@ const formData = ref({
 })
 
 const pageTitle = computed(() =>
-  props.formType === 'lost' ? 'Look for Lost Item' : 'Found Lost Item'
+  props.formType === 'lost' ? 'Found An Item' : 'Lost An Item'
 )
 
 const collectionName = computed(() =>
