@@ -3,16 +3,16 @@
 A web-based platform designed to streamline the reporting and recovery of lost and found items at the National University of Singapore (NUS).
 
 ## Table of Contents
-    - Overview
-    - Features
-    - Tech Stack
-    - Getting Started
-    - Project Structure
-    - Deployment
-    - Firebase Database Structure
-    - Team Members
-    - Test Accounts
-    - License
+- Overview
+- Features
+- Tech Stack
+- Getting Started
+- Project Structure
+- Deployment
+- Firebase Database Structure
+- Team Members
+- Test Accounts
+- License
 
 ### Overview
 
@@ -20,42 +20,42 @@ The previous NUS RepoApp faced limitations including unintuitive UI, ambiguous i
 
 This app allows users to:
 
-    - Report lost or found items with detailed descriptions and urgency ratings
-    - View and filter items by category, color, faculty, and urgency
-    - Receive or send in-app notifications to facilitate item return
-    - View visual analytics on item reports by category and location
-    - Update their contact details and manage posted items
+- Report lost or found items with detailed descriptions and urgency ratings
+- View and filter items by category, color, faculty, and urgency
+- Receive or send in-app notifications to facilitate item return
+- View visual analytics on item reports by category and location
+- Update their contact details and manage posted items
 
 
 ### Features
 
-    - User Authentication: Email + Google login support
-    - Lost/Found Reporting Forms: With optional image upload and urgency scale
-    - Filtering System: Color and faculty-based filters with urgency-sorted list
-    - Notifications: Contact post authors with consent-based Telegram or phone sharing
-    - Real-Time Updates: Auto-refresh on new posts using Firestore listeners
-    - Home Dashboard: Urgent item highlights + pie chart visualizations
-    - Settings Page: Update nickname, Telegram handle, phone, and logout
-    - My Posts: View and manage all personal submissions
+- User Authentication: Email + Google login support
+- Lost/Found Reporting Forms: With optional image upload and urgency scale
+- Filtering System: Color and faculty-based filters with urgency-sorted list
+- Notifications: Contact post authors with consent-based Telegram or phone sharing
+- Real-Time Updates: Auto-refresh on new posts using Firestore listeners
+- Home Dashboard: Urgent item highlights + pie chart visualizations
+- Settings Page: Update nickname, Telegram handle, phone, and logout
+- My Posts: View and manage all personal submissions
 
 ### Tech Stack
 
 #### Frontend:
 
-    - Vue.js 3 + Composition API
-    - Chart.js + Vue Chartkick
+- Vue.js 3 + Composition API
+- Chart.js + Vue Chartkick
 
 #### Backend & Hosting:
 
-    - Firebase Authentication
-    - Firestore Database
-    - Firebase Storage
-    - Firebase Hosting
+- Firebase Authentication
+- Firestore Database
+- Firebase Storage
+- Firebase Hosting
 
 #### DevOps:
 
-    - GitHub
-    - Vite
+- GitHub
+- Vite
 
 ### Getting Started
 
@@ -120,4 +120,5 @@ Additionally:
 
 ### License
 
-This project is built for NUS BT3103: Application Development. All rights reserved to the team.
+This project is built for NUS BT3103: Application Development. 
+All rights reserved to the team.
