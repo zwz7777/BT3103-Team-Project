@@ -3,16 +3,20 @@
 A web-based platform designed to streamline the reporting and recovery of lost and found items at the National University of Singapore (NUS).
 
 ## Table of Contents
-- Overview
-- Features
-- Tech Stack
-- Getting Started
-- Project Structure
-- Deployment
-- Firebase Database Structure
-- Team Members
-- Test Accounts
-- License
+- [NUS Lost \& Found](#nus-lost--found)
+  - [Table of Contents](#table-of-contents)
+    - [Overview](#overview)
+    - [Features](#features)
+    - [Tech Stack](#tech-stack)
+      - [Frontend:](#frontend)
+      - [Backend \& Hosting:](#backend--hosting)
+      - [DevOps:](#devops)
+    - [Getting Started](#getting-started)
+    - [Project Structure](#project-structure)
+    - [Firebase Database Structure](#firebase-database-structure)
+    - [Team Members](#team-members)
+    - [Test Accounts](#test-accounts)
+    - [License](#license)
 
 ### Overview
 
@@ -72,35 +76,52 @@ This app allows users to:
     ├── services/           # Firestore & notification logic
     ├── router/             # Vue Router setup
     ├── firebase.js         # Firebase config
+    ├── uifire.js           # Firebase UI config (no longer used)
     └── App.vue             # Main app container
 
-
-### Deployment
-
-    firebase login
-    firebase deploy
-    Deployed to: https://bt3103-lnf.web.app
-    
 
 ### Firebase Database Structure
 
     /users (collection)
       /userId (document)
-        - name: string
+        - uid: string
         - email: string
-        - profile: map
-
-    /posts (collection)
-      /postId (document)
-        - title: string
-        - userId: reference to /users/userId
+        - telegram: string
+        - phoneNumber: number
         - createdAt: timestamp
+        - notifications: array (notification ID)
+        - posts: array (post ID)
 
-Additionally:
-- foundItems and lostItems are split into separate collections
-- notifications collection stores in-app communication between users
-- Each user document may also store a posts array and a notifications array (by ID)
-
+    /foundItems (collection)
+      /postId (document)
+        - category: string
+        - color: string
+        - description: string
+        - faculty: string
+        - imageUrls: array (firebase storage image url)
+        - location: string
+        - timestamp: timestamp
+        - urgency: number
+        - userId: string (user ID)
+    
+    /lostItems (collection)
+      /postId (document)
+        - category: string
+        - color: string
+        - description: string
+        - faculty: string
+        - imageUrls: array (firebase storage image url)
+        - location: string
+        - timestamp: timestamp
+        - urgency: number
+        - userId: string (user ID)
+  
+    /notification (collection)
+      /notificationId (document)
+        - message: string
+        - posterUid: string (post ID)
+        - requesterUid: string (user ID)
+        - timestamp: timestamp
 
 ### Team Members
 - Lu Xinyu (A0282855R)
@@ -113,9 +134,10 @@ Additionally:
 
 ### Test Accounts
 
-    Name	Email	                    Password
-    A	testuser2@test.com	     123456
-    B	testuser@test.com	     123456
+| Name      | Email               | Password |
+|-----------|---------------------|----------|
+| Student A | testuser2@test.com  | 123456   |
+| Student B | testuser@test.com   | 123456   |
 
 
 ### License
