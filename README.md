@@ -8,14 +8,16 @@ A web-based platform designed to streamline the reporting and recovery of lost a
     - [Overview](#overview)
     - [Features](#features)
     - [Tech Stack](#tech-stack)
-      - [Frontend:](#frontend)
-      - [Backend \& Hosting:](#backend--hosting)
-      - [DevOps:](#devops)
+      - [Frontend](#frontend)
+      - [Backend \& Hosting](#backend--hosting)
+      - [DevOps](#devops)
     - [Getting Started](#getting-started)
+      - [URL](#url)
+      - [Local Host](#local-host)
+    - [Test Accounts](#test-accounts)
     - [Project Structure](#project-structure)
     - [Firebase Database Structure](#firebase-database-structure)
     - [Team Members](#team-members)
-    - [Test Accounts](#test-accounts)
     - [License](#license)
 
 ### Overview
@@ -44,29 +46,40 @@ This app allows users to:
 
 ### Tech Stack
 
-#### Frontend:
+#### Frontend
 
 - Vue.js 3 + Composition API
 - Chart.js + Vue Chartkick
 
-#### Backend & Hosting:
+#### Backend & Hosting
 
 - Firebase Authentication
 - Firestore Database
 - Firebase Storage
 - Firebase Hosting
 
-#### DevOps:
+#### DevOps
 
 - GitHub
 - Vite
 
-### Getting Started
+### Getting Started 
 
+#### URL
+https://bt3103-lnf.web.app
+
+#### Local Host
     git clone https://github.com/BT3103AppDev1/l2-finaltermproject-2425s2l2_group_9.git
     cd NUS-LostFound-project
     npm install
     npm run dev
+
+### Test Accounts
+
+| Name      | Email               | Password |
+|-----------|---------------------|----------|
+| Student A | testuser2@test.com  | 123456   |
+| Student B | testuser@test.com   | 123456   |
 
 ### Project Structure
 
@@ -130,15 +143,6 @@ This app allows users to:
 - Lyu Zhoucancan (A0282394W)
 - Zhong Wanzhi (A0281200Y)
 - Wang Yixuan (A0282005R)
-
-
-### Test Accounts
-
-| Name      | Email               | Password |
-|-----------|---------------------|----------|
-| Student A | testuser2@test.com  | 123456   |
-| Student B | testuser@test.com   | 123456   |
-
 
 ### License
 
