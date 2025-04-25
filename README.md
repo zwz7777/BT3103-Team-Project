@@ -66,35 +66,35 @@ This app allows users to:
 
 ### Project Structure
 
-src/
-├── components/         # Reusable UI components
-├── views/              # Page views
-├── services/           # Firestore & notification logic
-├── router/             # Vue Router setup
-├── firebase.js         # Firebase config
-└── App.vue             # Main app container
+    src/
+    ├── components/         # Reusable UI components
+    ├── views/              # Page views
+    ├── services/           # Firestore & notification logic
+    ├── router/             # Vue Router setup
+    ├── firebase.js         # Firebase config
+    └── App.vue             # Main app container
 
 
 ### Deployment
 
-firebase login
-firebase deploy
-Deployed to: https://bt3103-lnf.web.app
-
+    firebase login
+    firebase deploy
+    Deployed to: https://bt3103-lnf.web.app
+    
 
 ### Firebase Database Structure
 
-/users (collection)
-  /userId (document)
-    - name: string
-    - email: string
-    - profile: map
+    /users (collection)
+      /userId (document)
+        - name: string
+        - email: string
+        - profile: map
 
-/posts (collection)
-  /postId (document)
-    - title: string
-    - userId: reference to /users/userId
-    - createdAt: timestamp
+    /posts (collection)
+      /postId (document)
+        - title: string
+        - userId: reference to /users/userId
+        - createdAt: timestamp
 
 Additionally:
 - foundItems and lostItems are split into separate collections
@@ -113,9 +113,9 @@ Wang Yixuan (A0282005R)
 
 ### Test Accounts
 
-Name	Email	            Password
-A	testuser2@test.com	     123456
-B	testuser@test.com	     123456
+    Name	Email	            Password
+    A	testuser2@test.com	     123456
+    B	testuser@test.com	     123456
 
 
 ### License
