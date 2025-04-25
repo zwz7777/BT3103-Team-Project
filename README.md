@@ -1,118 +1,123 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/BMrh2GPn)
+# NUS Lost & Found
+
+A web-based platform designed to streamline the reporting and recovery of lost and found items at the National University of Singapore (NUS).
+
+## Table of Contents
+    - Overview
+    - Features
+    - Tech Stack
+    - Getting Started
+    - Project Structure
+    - Deployment
+    - Firebase Database Structure
+    - Team Members
+    - Test Accounts
+    - License
+
+### Overview
+
+The previous NUS RepoApp faced limitations including unintuitive UI, ambiguous item descriptions, and low item recovery rates. Our team developed a modern alternative that emphasizes user-centered design, operational efficiency, and real-time responsiveness.
+
+This app allows users to:
+
+    - Report lost or found items with detailed descriptions and urgency ratings
+    - View and filter items by category, color, faculty, and urgency
+    - Receive or send in-app notifications to facilitate item return
+    - View visual analytics on item reports by category and location
+    - Update their contact details and manage posted items
 
 
-# 🧠 Git & GitHub Collaboration Cheatsheet (Team Workflow)
+### Features
 
-## 🔧 1. Setup (only once)
-```bash
-# Set your name and email (one-time setup) - will be reflected on git commits
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
+    - User Authentication: Email + Google login support
+    - Lost/Found Reporting Forms: With optional image upload and urgency scale
+    - Filtering System: Color and faculty-based filters with urgency-sorted list
+    - Notifications: Contact post authors with consent-based Telegram or phone sharing
+    - Real-Time Updates: Auto-refresh on new posts using Firestore listeners
+    - Home Dashboard: Urgent item highlights + pie chart visualizations
+    - Settings Page: Update nickname, Telegram handle, phone, and logout
+    - My Posts: View and manage all personal submissions
 
-# Clone the repository (do this once)
-git clone https://github.com/BT3103AppDev1/l2-finaltermproject-2425s2l2_group_9.git
-cd l2-finaltermproject-2425s2l2_group_9
-```
+### Tech Stack
 
----
+#### Frontend:
 
-## 🌱 2. Create and Switch to Your Own Branch
-```bash
-# Make sure you're on the main branch
-git checkout main
+    - Vue.js 3 + Composition API
+    - Chart.js + Vue Chartkick
 
-# Pull the latest changes
-git pull origin main
+#### Backend & Hosting:
 
-# Create and switch to your new branch
-git checkout -b <your-branch-name>
-```
+    - Firebase Authentication
+    - Firestore Database
+    - Firebase Storage
+    - Firebase Hosting
 
-📝 **Branch naming convention:**  
-<your-name>
+#### DevOps:
 
----
+    - GitHub
+    - Vite
 
-## ✍️ 3. Make Changes
-- Add or edit files
-- Test your code (if needed)
+### Getting Started
 
-Then, run:
-```bash
-# Check which files were changed
-git status
+    git clone https://github.com/BT3103AppDev1/l2-finaltermproject-2425s2l2_group_9.git
+    cd NUS-LostFound-project
+    npm install
+    npm run dev
 
-# Stage the files you want to commit
-git add .
+### Project Structure
 
-# Commit your changes with a clear message
-git commit -m "Short description of what you did"
-```
-
-- Alternatively, commit through vscode source controls instead of command line tools:
-![Source Control Image](images/vscode_commit.png)
-
-"+" sign is for staging changes.
+src/
+├── components/         # Reusable UI components
+├── views/              # Page views
+├── services/           # Firestore & notification logic
+├── router/             # Vue Router setup
+├── firebase.js         # Firebase config
+└── App.vue             # Main app container
 
 
----
+### Deployment
 
-## 🔄 4. Push Your Branch to GitHub
-```bash
-git push origin your-branch-name
-```
+firebase login
+firebase deploy
+Deployed to: https://bt3103-lnf.web.app
 
-- Alternatively, push through vscode source controls via "sync" button (same position as "commit")
 
----
+### Firebase Database Structure
 
-## 📦 5. Create a Pull Request (PR) - when you want to merge your changes to the main branch
-1. Go to the repository on GitHub.
-2. Click the **“Compare & pull request”** button.
-3. Add a **descriptive title** and comment on what you did.
-4. Submit the pull request to merge into `main`.
-5. Tag someone (xinyu) to **review** your PR if needed.
+/users (collection)
+  /userId (document)
+    - name: string
+    - email: string
+    - profile: map
 
----
+/posts (collection)
+  /postId (document)
+    - title: string
+    - userId: reference to /users/userId
+    - createdAt: timestamp
 
-## 🔄 6. Keeping Your Branch Updated 
-- a good practice would be: everytime do this before you continue developing your own branch, ensure your branch is updated before you create a pull request
+Additionally:
+- foundItems and lostItems are split into separate collections
+- notifications collection stores in-app communication between users
+- Each user document may also store a posts array and a notifications array (by ID)
 
-```bash
-# Step 1: Switch to your local main branch
-git checkout main
 
-# Step 2: Fetch and update local main with origin/main
-git fetch origin
-git pull origin main
-# OR: git merge origin/main (if you prefer manual control)
+### Team Members
+Lu Xinyu (A0282855R)
+Li Xinyi (A0282032R)
+Luo Yuran (A0287951M)
+Lyu Zhoucancan (A0282394W)
+Zhong Wanzhi (A0281200Y)
+Wang Yixuan (A0282005R)
 
-# Step 3: Switch to your branch
-git checkout your-branch-name
 
-# Step 4: Merge updated main into your branch
-git merge main
+### Test Accounts
 
-# OR: rebase for cleaner history (optional)
-# git rebase origin/main
-```
+Name	Email	            Password
+A	testuser2@test.com	     123456
+B	testuser@test.com	     123456
 
----
 
-## ✅ 7. After Your PR is Merged
-```bash
-# Switch to main and pull latest
-git checkout main
-git pull origin main
+### License
 
-# Delete your old branch (optional)
-git branch -d your-branch-name            # delete local
-git push origin --delete your-branch-name  # delete remote
-```
-
----
-
-## 💡 Tips [Important!!!]
-- Pull frequently from `main` to avoid conflicts. 
-- Keep your commits small and focused.
-- Write clear commit messages and PR titles.
+This project is built for NUS BT3103: Application Development. All rights reserved to the team.
