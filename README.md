@@ -103,17 +103,17 @@ Additionally:
 
 
 ### Team Members
-Lu Xinyu (A0282855R)
-Li Xinyi (A0282032R)
-Luo Yuran (A0287951M)
-Lyu Zhoucancan (A0282394W)
-Zhong Wanzhi (A0281200Y)
-Wang Yixuan (A0282005R)
+- Lu Xinyu (A0282855R)
+- Li Xinyi (A0282032R)
+- Luo Yuran (A0287951M)
+- Lyu Zhoucancan (A0282394W)
+- Zhong Wanzhi (A0281200Y)
+- Wang Yixuan (A0282005R)
 
 
 ### Test Accounts
 
-    Name	Email	            Password
+    Name	Email	                    Password
     A	testuser2@test.com	     123456
     B	testuser@test.com	     123456
 
