@@ -1,4 +1,4 @@
-# NUS Lost & Found
+# NUS Lost & Found - This is a copy of a group project originally developed under a private repository for academic purposes.
 
 A web-based platform designed to streamline the reporting and recovery of lost and found items at the National University of Singapore (NUS).
 
