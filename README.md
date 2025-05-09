@@ -1,4 +1,4 @@
-# NUS Lost & Found - This is a copy of a group project originally developed under a private repository for academic purposes.
+# NUS Lost & Found 
 
 A web-based platform designed to streamline the reporting and recovery of lost and found items at the National University of Singapore (NUS).
 
@@ -148,3 +148,5 @@ https://bt3103-lnf.web.app
 
 This project is built for NUS BT3103: Application Development. 
 All rights reserved to the team.
+
+This is a copy of the group project originally developed under a private repository for academic purposes.
